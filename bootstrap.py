@@ -1176,6 +1176,50 @@ FILES["templates/diary/diary.html"] = '''
 {% endblock %}
 '''
 
+SKELETON = {
+    "manage.py": '''
+import os
+import sys
+
+
+def main():
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+    from django.core.management import execute_from_command_line
+    execute_from_command_line(sys.argv)
+
+
+if __name__ == "__main__":
+    main()
+''',
+    "config/__init__.py": "",
+    "config/wsgi.py": '''
+import os
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+application = get_wsgi_application()
+''',
+    "config/asgi.py": '''
+import os
+from django.core.asgi import get_asgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+application = get_asgi_application()
+''',
+}
+
+for _app in ("accounts", "website", "crm", "diary"):
+    SKELETON[f"{_app}/__init__.py"] = ""
+    SKELETON[f"{_app}/migrations/__init__.py"] = ""
+    SKELETON[f"{_app}/apps.py"] = f'''
+from django.apps import AppConfig
+
+
+class {_app.capitalize()}Config(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "{_app}"
+'''
+
 
 def write(rel, text):
     path = BASE / rel
@@ -1183,20 +1227,16 @@ def write(rel, text):
     path.write_text(text.strip() + "\n", encoding="utf-8")
 
 
-def sh(cmd):
-    print(">>", cmd, flush=True)
-    subprocess.run(cmd, shell=True, check=True, cwd=BASE)
-
-
 def main():
-    if not (BASE / "manage.py").exists():
-        sh("django-admin startproject config .")
-        for app in ("accounts", "website", "crm", "diary"):
-            sh(f"{sys.executable} manage.py startapp {app}")
+    for rel, text in SKELETON.items():
+        write(rel, text)
     for rel, text in FILES.items():
         write(rel, text)
-    print(f"Проект создан: {len(FILES)} файлов", flush=True)
+    print(f"Проект создан: {len(SKELETON) + len(FILES)} файлов", flush=True)
 
 
 if __name__ == "__main__":
     main()
+
+
+
