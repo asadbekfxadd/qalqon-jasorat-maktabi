@@ -1,8 +1,0 @@
-Django>=5.2,<6.0
-django-jazzmin>=3.0
-django-import-export>=4.3
-tablib[xlsx]
-gunicorn
-whitenoise
-dj-database-url
-psycopg2-binary
