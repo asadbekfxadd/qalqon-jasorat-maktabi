@@ -1,6 +1,6 @@
 """Панель администратора."""
 from collections import defaultdict
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, abort
 from .models import *
 from .core import *
@@ -678,3 +678,74 @@ def demo():
         "News": News.query.filter_by(is_demo=True).count(),
     }
     return render_template("admin/demo.html", counts=counts, pw=DEMO_PASSWORD)
+
+
+# ───────── оплаты ─────────
+@bp.route("/payments", methods=["GET", "POST"])
+@roles("admin")
+def payments():
+    f = request.form
+    if request.method == "POST":
+        act = f.get("act")
+        st = db.session.get(Student, int(f.get("student_id", 0) or 0))
+        if not st:
+            abort(404)
+        if act == "fee":
+            t = Tuition.query.filter_by(student_id=st.id).first() or Tuition(student_id=st.id, is_demo=st.is_demo)
+            t.monthly_fee = max(int(f.get("fee", "0").replace(" ", "") or 0), 0)
+            db.session.add(t)
+            audit("tuition_fee", f"{st.full_name}={t.monthly_fee}")
+        elif act == "pay":
+            try:
+                amt = int(f.get("amount", "0").replace(" ", ""))
+            except ValueError:
+                amt = 0
+            if amt <= 0:
+                flash(L("Summani kiriting.", "Укажите сумму."), "bad")
+                return back("/admin/payments")
+            db.session.add(Payment(student_id=st.id, amount=amt, day=parse_day(f.get("day")),
+                                   method=f.get("method") if f.get("method") in METHODS else "cash",
+                                   note=f.get("note", "")[:200], created_by=g.user.id, is_demo=st.is_demo))
+            notify(st.parents, "payment", f"To‘lov qabul qilindi: {st.full_name} — {money(amt)} so‘m",
+                   f"Платёж получен: {st.full_name} — {money(amt)} сум", "/cabinet/payments?c=%d" % st.id, demo=st.is_demo)
+            audit("payment", f"{st.full_name}: {amt}")
+        elif act == "del_pay":
+            Payment.query.filter_by(id=int(f["id"]), student_id=st.id).delete()
+            audit("payment_delete", f"{st.full_name}")
+        db.session.commit()
+        flash(L("Saqlandi.", "Сохранено."), "ok")
+        return back("/admin/payments")
+    cid = request.args.get("class", type=int)
+    q = Student.query.filter_by(active=True)
+    if cid:
+        q = q.filter_by(class_id=cid)
+    rows = [(s, student_balance(s)) for s in q.order_by(Student.full_name)]
+    if request.args.get("debt"):
+        rows = [r for r in rows if r[1]["debt"] > 0]
+    if request.args.get("xlsx"):
+        audit("export_payments", f"{len(rows)} rows")
+        return xlsx_response("tolovlar", ["O‘quvchi / Ученик", "Sinf / Класс", "Oylik / В месяц", "Hisoblangan / Начислено", "To‘langan / Оплачено", "Qarz / Долг"],
+                             [[s.full_name, s.klass.name if s.klass else "", b["fee"], b["due"], b["paid"], b["debt"]] for s, b in rows], "To‘lovlar")
+    ids = [s.id for s, _ in rows]
+    recent = Payment.query.filter(Payment.student_id.in_(ids or [0])).order_by(Payment.day.desc(), Payment.id.desc()).limit(30).all()
+    m_start = today().replace(day=1)
+    month_total = db.session.query(func.coalesce(func.sum(Payment.amount), 0)).filter(Payment.day >= m_start).scalar()
+    return render_template("admin/payments.html", rows=rows, recent=recent, METHODS=METHODS, money=money,
+                           classes=SchoolClass.query.order_by(SchoolClass.name).all(), cid=cid,
+                           month_total=int(month_total), total_debt=sum(b["debt"] for _, b in rows))
+
+
+@bp.route("/grid")
+@roles("admin")
+def grid():
+    cid, sid = request.args.get("class", type=int), request.args.get("subject", type=int)
+    ym = request.args.get("m") or today().strftime("%Y-%m")
+    try:
+        start = date.fromisoformat(ym + "-01")
+    except ValueError:
+        start = today().replace(day=1)
+    end = period_range("month", start)[1]
+    kl = db.session.get(SchoolClass, cid) if cid else None
+    data = grid_data(kl, sid, start, end) if kl else None
+    return render_template("admin/grid.html", classes=SchoolClass.query.order_by(SchoolClass.name).all(),
+                           subjects=Subject.query.order_by(Subject.name).all(), kl=kl, sid=sid, ym=start.strftime("%Y-%m"), data=data)

@@ -129,6 +129,10 @@ def load_demo():
         a = Application(number=f"DEMO-{i + 1:03d}", child_name=cn, birth_date=date(2014, 5, 1), parent_name="Demo Ota-ona", phone="+998 90 111 22 3%d" % i,
                         address="Toshkent", grade="5", status=st, is_demo=True, created=datetime.utcnow() - timedelta(days=i * 20))
         db.session.add(a)
+    for st in studs:
+        db.session.add(Tuition(student_id=st.id, monthly_fee=1500000, is_demo=True))
+        for m in range(rnd.choice([1, 2, 3])):
+            db.session.add(Payment(student_id=st.id, amount=1500000, day=today() - timedelta(days=30 * m + 3), method=rnd.choice(['cash', 'card', 'transfer']), is_demo=True))
     db.session.commit()
     # уведомление-пример
     notify(p1, "info", "Maktabda yangi e’lon: Ota-onalar yig‘ilishi", "Новое объявление: Родительское собрание", "/cabinet/school", demo=True)
@@ -152,6 +156,8 @@ def purge_demo():
     S.query(Homework).filter(Homework.id.in_(hw or [0])).delete(False)
     S.query(Material).filter(Material.id.in_(mats or [0])).delete(False)
     for M in (Grade, Attendance, Remark, Achievement):
+        S.query(M).filter(db.or_(M.student_id.in_(sid or [0]), M.is_demo == True)).delete(False)  # noqa
+    for M in (Payment, Tuition):
         S.query(M).filter(db.or_(M.student_id.in_(sid or [0]), M.is_demo == True)).delete(False)  # noqa
     S.query(Lesson).filter(db.or_(Lesson.is_demo == True, Lesson.class_id.in_(cid or [0]))).delete(False)  # noqa
     S.query(Announcement).filter(db.or_(Announcement.is_demo == True, Announcement.class_id.in_(cid or [0]))).delete(False)  # noqa

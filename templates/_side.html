@@ -9,6 +9,8 @@
   {{ a('admin.subjects', L('Fanlar','Предметы')) }}
   {{ a('admin.schedule', L('Dars jadvali','Расписание')) }}
   <h5>{{ L('Nazorat','Контроль') }}</h5>
+  {{ a('admin.payments', L('To‘lovlar','Оплаты')) }}
+  {{ a('admin.grid', L('Jurnal jadvali','Сетка журнала')) }}
   {{ a('admin.attendance', L('Davomat','Посещаемость')) }}
   {{ a('admin.grades', L('Baholar','Оценки')) }}
   {{ a('admin.homework', L('Uy vazifalari','Домашние задания')) }}
@@ -22,6 +24,7 @@
 {% elif me.role=='teacher' %}
   {{ a('teacher.home', L('Bosh sahifa','Главная')) }}
   {{ a('teacher.journal', L('Elektron jurnal','Электронный журнал')) }}
+  {{ a('teacher.grid', L('Jurnal jadvali','Сетка журнала')) }}
   {{ a('teacher.homework', L('Uy vazifalari','Домашние задания'), match='teacher.homework') }}
   {{ a('teacher.materials', L('Materiallar','Материалы')) }}
   {{ a('teacher.stats', L('O‘zlashtirish','Успеваемость')) }}
@@ -39,6 +42,7 @@
   {{ a('cabinet.achievements', L('Yutuqlar','Достижения')) }}
   {% if me.role=='student' %}{{ a('cabinet.materials', L('O‘quv materiallari','Учебные материалы')) }}{% endif %}
   {{ a('cabinet.progress', L('Shaxsiy progress','Личный прогресс')) }}
+  {% if me.role=='parent' %}{{ a('cabinet.payments', L('To‘lovlar','Оплата обучения')) }}{% endif %}
   {{ a('cabinet.report', L('Hisobot','Отчёт')) }}
   <h5>{{ L('Maktab bilan aloqa','Связь со школой') }}</h5>
   {{ a('cabinet.school', L('E’lonlar','Объявления')) }}

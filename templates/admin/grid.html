@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Jurnal jadvali','Сетка журнала') }}</h1></div>
+<form class="card row" style="margin-bottom:16px"><div><label>{{ L('Sinf','Класс') }}</label><select name="class">{% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if kl and kl.id==c.id }}>{{ c.name }}</option>{% endfor %}</select></div>
+<div><label>{{ L('Fan','Предмет') }}</label><select name="subject"><option value="">{{ L('Hammasi','Все') }}</option>{% for s in subjects %}<option value="{{ s.id }}" {{ 'selected' if sid==s.id }}>{{ subj(s) }}</option>{% endfor %}</select></div>
+<div><label>{{ L('Oy','Месяц') }}</label><input type="month" name="m" value="{{ ym }}"></div><div class="fit"><button class="btn">{{ L('Ko‘rsatish','Показать') }}</button></div></form>
+{% if kl %}{% include "partials/grid.html" %}{% else %}<div class="empty">{{ L('Sinfni tanlang.','Выберите класс.') }}</div>{% endif %}{% endblock %}

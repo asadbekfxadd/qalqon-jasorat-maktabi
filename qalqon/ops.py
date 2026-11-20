@@ -1,6 +1,6 @@
 """Общие операции (используются админом и учителем) и Excel-экспорт."""
 from io import BytesIO
-from datetime import date
+from datetime import date, timedelta
 from flask import Response
 from .models import *
 from .core import *
@@ -84,3 +84,48 @@ def class_report_xlsx(rep, name):
     hdr = ["O‘quvchi / Ученик"] + [subj_name(x) for x in rep["subjects"]] + ["O‘rtacha / Средний", "Davomat % / Посещ. %"]
     rows = [[r["st"].full_name] + [r["per"][x.id] for x in rep["subjects"]] + [r["avg"], r["att"]["rate"]] for r in rep["rows"]]
     return xlsx_response(name, hdr, rows, rep["klass"].name)
+
+
+# ───────── оплаты ─────────
+METHODS = {"cash": ("Naqd", "Наличные"), "card": ("Karta", "Карта"), "transfer": ("O‘tkazma", "Перевод")}
+
+
+def months_elapsed(ref=None):
+    """Сколько учебных месяцев (сентябрь–май) прошло к дате, включая текущий."""
+    ref = ref or today()
+    if ref.month >= 9:
+        return ref.month - 8
+    return 9 if ref.month >= 6 else ref.month + 4
+
+
+def money(n):
+    return f"{int(n or 0):,}".replace(",", " ")
+
+
+def student_balance(st):
+    t = Tuition.query.filter_by(student_id=st.id).first()
+    fee = t.monthly_fee if t else 0
+    paid = db.session.query(func.coalesce(func.sum(Payment.amount), 0)).filter(
+        Payment.student_id == st.id, Payment.day >= school_year_start()).scalar()
+    due = fee * months_elapsed()
+    return {"fee": fee, "due": due, "paid": int(paid), "debt": max(due - int(paid), 0), "credit": max(int(paid) - due, 0)}
+
+
+# ───────── сетка «ученики × дни» ─────────
+def grid_data(kl, subject_id, start, end):
+    days = []
+    d = start
+    while d <= end:
+        if d.weekday() < 6:
+            days.append(d)
+        d += timedelta(days=1)
+    sids = [s.id for s in kl.students]
+    grades = {}
+    q = Grade.query.filter(Grade.student_id.in_(sids or [0]), Grade.day >= start, Grade.day <= end)
+    if subject_id:
+        q = q.filter(Grade.subject_id == subject_id)
+    for g_ in q.order_by(Grade.id):
+        grades.setdefault((g_.student_id, g_.day), []).append(g_.score)
+    att = {(a.student_id, a.day): a.status for a in Attendance.query.filter(
+        Attendance.student_id.in_(sids or [0]), Attendance.day >= start, Attendance.day <= end)}
+    return {"days": days, "grades": grades, "att": att}

@@ -1,0 +1,6 @@
+{# data = grid_data; kl = класс #}
+<div class="tw"><table style="font-size:13px"><tr><th style="position:sticky;left:0;background:var(--card2)">{{ L('O‘quvchi','Ученик') }}</th>{% for d in data.days %}<th style="padding:8px 6px;text-align:center">{{ d.day }}<br><span style="font-weight:400">{{ WEEKDAYS[d.weekday()][0][:2] }}</span></th>{% endfor %}</tr>
+{% for s in kl.students %}<tr><td class="nowrap" style="position:sticky;left:0;background:var(--card)">{{ s.full_name }}</td>
+{% for d in data.days %}{% set gs = data.grades.get((s.id,d)) %}{% set a = data.att.get((s.id,d)) %}<td style="padding:6px 4px;text-align:center;white-space:nowrap">{% if gs %}{% for x in gs %}<span class="sc s{{ x }}" style="width:22px;height:22px;font-size:12px">{{ x }}</span>{% endfor %}{% endif %}{% if a=='absent' %}<span class="pill rejected" style="padding:0 6px">Н</span>{% elif a=='excused' %}<span class="pill excused" style="padding:0 6px">С</span>{% elif a=='late' %}<span class="pill late" style="padding:0 6px">О</span>{% endif %}</td>{% endfor %}</tr>
+{% else %}<tr><td class="muted">—</td></tr>{% endfor %}</table></div>
+<p class="muted small">{{ L('H — qatnashmadi, S — sababli, O — kechikdi.','Н — отсутствовал, С — уважительная причина, О — опоздал.') }}</p>

@@ -343,3 +343,24 @@ class PasswordReset(Base):
     expires = db.Column(db.DateTime, nullable=False)
     used = db.Column(db.Boolean, default=False)
     user = db.relationship("User")
+
+
+class Tuition(Base):
+    """Ежемесячная плата за обучение (сум) для ученика."""
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("q_student.id", ondelete="CASCADE"), unique=True, nullable=False)
+    monthly_fee = db.Column(db.Integer, default=0)
+    is_demo = db.Column(db.Boolean, default=False, index=True)
+    student = db.relationship("Student")
+
+
+class Payment(Base):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("q_student.id", ondelete="CASCADE"), nullable=False, index=True)
+    amount = db.Column(db.Integer, nullable=False)
+    day = db.Column(db.Date, default=date.today, index=True)
+    method = db.Column(db.String(10), default="cash")  # cash|card|transfer
+    note = db.Column(db.String(200), default="")
+    created_by = db.Column(db.Integer)
+    is_demo = db.Column(db.Boolean, default=False, index=True)
+    student = db.relationship("Student")

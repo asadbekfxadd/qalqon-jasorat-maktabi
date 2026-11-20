@@ -59,6 +59,8 @@ def create_app():
             r.headers["Cache-Control"] = "no-store"
         return r
 
+    from .ops import money as ops_money, METHODS as ops_methods
+
     @app.context_processor
     def ctx():
         unread = 0
@@ -69,7 +71,7 @@ def create_app():
                     today=core.today, fmt=core.fmt_date, fmtdt=core.fmt_dt, nm=core.nm, pick=core.pick,
                     STATUS=core.STATUS_NAMES, ATT=core.ATT_NAMES, WEEKDAYS=core.WEEKDAYS, MONTHS=core.MONTHS,
                     ACH=core.ACH_NAMES, ROLE=core.ROLE_NAMES, CATS=core.CATS, NEWS_CATS=core.NEWS_CATS,
-                    PERIODS=core.PERIODS, HWS=core.HW_STATUS, subj=core.subj_name, video_info=core.video_info)
+                    PERIODS=core.PERIODS, money=ops_money, METHODS=ops_methods, HWS=core.HW_STATUS, subj=core.subj_name, video_info=core.video_info)
 
     def err(code, uz, ru):
         return render_template("error.html", code=code, msg=L(uz, ru)), code

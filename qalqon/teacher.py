@@ -1,5 +1,5 @@
 """Кабинет учителя: доступ только к назначенным классам и предметам."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, abort
 from .models import *
 from .core import *
@@ -269,3 +269,22 @@ def announce():
 def schedule():
     ls = Lesson.query.filter_by(teacher_id=g.user.id).order_by(Lesson.weekday, Lesson.number).all()
     return render_template("teacher/schedule.html", lessons=ls)
+
+
+@bp.route("/grid")
+@roles("teacher")
+def grid():
+    pairs = my_pairs()
+    if not pairs:
+        return render_template("teacher/grid.html", pairs=[], kl=None)
+    cid, sid = request.args.get("class", type=int), request.args.get("subject", type=int)
+    if not (cid and sid):
+        cid, sid = pairs[0][0].id, pairs[0][1].id
+    kl, sub = pair_or_403(cid, sid)
+    ym = request.args.get("m") or today().strftime("%Y-%m")
+    try:
+        start = date.fromisoformat(ym + "-01")
+    except ValueError:
+        start = today().replace(day=1)
+    end = period_range("month", start)[1]
+    return render_template("teacher/grid.html", pairs=pairs, kl=kl, sub=sub, ym=start.strftime("%Y-%m"), data=grid_data(kl, sid, start, end))

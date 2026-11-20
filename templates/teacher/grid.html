@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Jurnal jadvali','Сетка журнала') }}</h1></div>
+{% if not pairs %}<div class="empty">—</div>{% else %}
+<div class="tabs">{% for k,s in pairs %}<a href="{{ url_for('teacher.grid', **{'class': k.id, 'subject': s.id, 'm': ym}) }}" class="{{ 'on' if k.id==kl.id and s.id==sub.id }}">{{ k.name }} · {{ subj(s) }}</a>{% endfor %}</div>
+<form class="card row" style="margin-bottom:16px"><input type="hidden" name="class" value="{{ kl.id }}"><input type="hidden" name="subject" value="{{ sub.id }}"><div><label>{{ L('Oy','Месяц') }}</label><input type="month" name="m" value="{{ ym }}"></div><div class="fit"><button class="btn ghost">{{ L('Ko‘rsatish','Показать') }}</button></div></form>
+{% set data = data %}{% include "partials/grid.html" %}{% endif %}{% endblock %}

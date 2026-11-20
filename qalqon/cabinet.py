@@ -181,3 +181,13 @@ def report():
     kind = request.args.get("p", "month")
     kind = kind if kind in PERIODS else "month"
     return render("cab/report.html", r=student_report(g.st, kind), kind=kind)
+
+
+@bp.route("/payments")
+@child_view
+def payments():
+    if g.user.role != "parent":
+        abort(403)
+    st = g.st
+    items = Payment.query.filter_by(student_id=st.id).order_by(Payment.day.desc(), Payment.id.desc()).all()
+    return render("cab/payments.html", b=student_balance(st), items=items, money=money, METHODS=METHODS)
