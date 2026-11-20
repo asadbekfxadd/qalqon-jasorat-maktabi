@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead"><h1>{{ L('Ученики','O‘quvchilar') }}</h1></div>
+<div class="seg"><a class="{{ 'on' if not gid }}" href="{{ url_for('a_students') }}">{{ L('Все','Hammasi') }}</a>{% for gr in groups %}<a class="{{ 'on' if gid==gr.id }}" href="{{ url_for('a_students', g=gr.id) }}">{{ gr.name }}</a>{% endfor %}</div>
+<details class="card" style="margin-bottom:18px" {{ 'open' if not students }}><summary style="cursor:pointer;font-weight:600">{{ L('+ Новый ученик','+ Yangi o‘quvchi') }}</summary>
+<form method="post" class="grid g4" style="margin-top:14px">{{ tok() }}
+  <div><label>{{ L('Имя ученика','O‘quvchi ismi') }}</label><input name="full_name" required></div>
+  <div><label>{{ L('Год рождения','Tug‘ilgan yili') }}</label><input name="birth_year" type="number" min="2000" max="2022"></div>
+  <div><label>{{ L('Группа','Guruh') }}</label><select name="group_id"><option value="">—</option>{% for gr in groups %}<option value="{{ gr.id }}" {{ 'selected' if gid==gr.id }}>{{ gr.name }}</option>{% endfor %}</select></div>
+  <div><label>{{ L('Родитель','Ota-ona') }}</label><select name="parent_id"><option value="">—</option>{% for p in parents %}<option value="{{ p.id }}">{{ p.full_name }}</option>{% endfor %}</select></div>
+  <div><button class="btn" type="submit">{{ L('Добавить','Qo‘shish') }}</button></div>
+</form></details>
+<div class="tw"><table><tr><th>{{ L('Имя','Ism') }}</th><th>{{ L('Год','Yil') }}</th><th>{{ L('Группа','Guruh') }}</th><th>{{ L('Родитель','Ota-ona') }}</th><th></th></tr>
+{% for s in students %}<tr><form method="post" id="s{{ s.id }}">{{ tok() }}<input type="hidden" name="id" value="{{ s.id }}"></form>
+<td><input form="s{{ s.id }}" name="full_name" value="{{ s.full_name }}"></td><td><input form="s{{ s.id }}" name="birth_year" type="number" value="{{ s.birth_year or '' }}" style="min-width:80px"></td>
+<td><select form="s{{ s.id }}" name="group_id"><option value="">—</option>{% for gr in groups %}<option value="{{ gr.id }}" {{ 'selected' if s.group_id==gr.id }}>{{ gr.name }}</option>{% endfor %}</select></td>
+<td><select form="s{{ s.id }}" name="parent_id"><option value="">—</option>{% for p in parents %}<option value="{{ p.id }}" {{ 'selected' if s.parent_id==p.id }}>{{ p.full_name }}</option>{% endfor %}</select></td>
+<td><div class="row-actions"><button form="s{{ s.id }}" class="btn sm">{{ L('Сохранить','Saqlash') }}</button><a class="btn sm ghost" href="{{ url_for('p_child', sid=s.id) }}">{{ L('Дневник','Kundalik') }}</a><button form="s{{ s.id }}" name="act" value="delete" class="btn sm danger" onclick="return confirm('{{ L('Удалить ученика со всеми оценками?','O‘quvchi barcha baholari bilan o‘chirilsinmi?') }}')">✕</button></div></td></tr>
+{% else %}<tr><td colspan="5" class="muted">{{ L('Учеников пока нет.','Hozircha o‘quvchilar yo‘q.') }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

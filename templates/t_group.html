@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead"><p class="small"><a href="{{ url_for('t_home') }}">← {{ L('Мои группы','Guruhlarim') }}</a></p><h1>{{ gr.name }}</h1><p class="muted">{{ gr.branch.city if gr.branch }} · {{ gr.schedule }}</p></div>
+
+<h2>{{ L('Посещаемость','Davomat') }}</h2>
+<form method="get" class="row-actions" style="margin-bottom:12px;align-items:end"><div><label for="d">{{ L('Дата','Sana') }}</label><input id="d" type="date" name="d" value="{{ day.isoformat() }}" max="{{ today().isoformat() }}" onchange="this.form.submit()"></div></form>
+{% if gr.students %}
+<form method="post" action="{{ url_for('t_att', gid=gr.id) }}">{{ tok() }}<input type="hidden" name="day" value="{{ day.isoformat() }}">
+<div class="tw"><table><tr><th>{{ L('Ученик','O‘quvchi') }}</th><th>{{ L('Присутствует','Keldi') }}</th><th>{{ L('Опоздал','Kechikdi') }}</th><th>{{ L('Отсутствует','Kelmadi') }}</th></tr>
+{% for s in gr.students %}<tr><td>{{ s.full_name }}</td>
+{% for k in ['present','late','absent'] %}<td><input type="radio" name="s{{ s.id }}" value="{{ k }}" style="width:auto" {{ 'checked' if att.get(s.id)==k }} aria-label="{{ k }}"></td>{% endfor %}</tr>{% endfor %}</table></div>
+<p><button class="btn" type="submit">{{ L('Сохранить посещаемость','Davomatni saqlash') }}</button></p></form>
+
+<h2 style="margin-top:34px">{{ L('Поставить оценку','Baho qo‘yish') }}</h2>
+<form method="post" action="{{ url_for('t_grade', gid=gr.id) }}" class="card grid g3">{{ tok() }}<input type="hidden" name="day" value="{{ day.isoformat() }}">
+  <div><label>{{ L('Ученик','O‘quvchi') }}</label><select name="student" required>{% for s in gr.students %}<option value="{{ s.id }}">{{ s.full_name }}</option>{% endfor %}</select></div>
+  <div><label>{{ L('Предмет','Fan') }}</label><input name="subject" list="subj" required maxlength="80"><datalist id="subj"><option value="{{ L('Строевая','Saf') }}"><option value="{{ L('Физподготовка','Jismoniy tayyorgarlik') }}"><option value="{{ L('Знания','Bilim') }}"><option value="{{ L('Дисциплина','Intizom') }}"></datalist></div>
+  <div><label>{{ L('Оценка','Baho') }}</label><select name="score">{% for n in [5,4,3,2,1] %}<option>{{ n }}</option>{% endfor %}</select></div>
+  <div class="full"><label>{{ L('Комментарий для родителей (необязательно)','Ota-onalar uchun izoh (ixtiyoriy)') }}</label><input name="comment" maxlength="300"></div>
+  <div><button class="btn" type="submit">{{ L('Добавить оценку','Baho qo‘shish') }}</button></div>
+</form>
+{% else %}<p class="muted">{{ L('В группе пока нет учеников.','Guruhda hozircha o‘quvchilar yo‘q.') }}</p>{% endif %}
+
+<h2 style="margin-top:34px">{{ L('Домашнее задание','Uy vazifasi') }}</h2>
+<form method="post" action="{{ url_for('t_hw', gid=gr.id) }}" class="card grid g3">{{ tok() }}
+  <div><label>{{ L('Тема','Mavzu') }}</label><input name="title" required maxlength="120"></div>
+  <div><label>{{ L('Срок','Muddat') }}</label><input type="date" name="due"></div>
+  <div class="full"><label>{{ L('Описание','Tavsif') }}</label><textarea name="text" rows="2" maxlength="1000"></textarea></div>
+  <div><button class="btn" type="submit">{{ L('Задать','Topshirish') }}</button></div>
+</form>
+{% for h in hw %}<div class="diary-day" style="margin-top:12px"><b>{{ h.title }}</b> <span class="muted small">{{ fmt(h.day) }}{% if h.due %} → {{ fmt(h.due) }}{% endif %}</span><br><span style="white-space:pre-line">{{ h.text }}</span>
+<form method="post" action="{{ url_for('t_hw', gid=gr.id) }}" style="margin-top:6px">{{ tok() }}<input type="hidden" name="id" value="{{ h.id }}"><button class="btn sm danger" name="act" value="delete">{{ L('Удалить','O‘chirish') }}</button></form></div>{% endfor %}
+
+<h2 style="margin-top:34px">{{ L('Последние оценки','So‘nggi baholar') }}</h2>
+<div class="tw"><table><tr><th>{{ L('Дата','Sana') }}</th><th>{{ L('Ученик','O‘quvchi') }}</th><th>{{ L('Предмет','Fan') }}</th><th>{{ L('Оценка','Baho') }}</th><th>{{ L('Комментарий','Izoh') }}</th><th></th></tr>
+{% for x in grades %}<tr><td>{{ fmt(x.day) }}</td><td>{{ (gr.students|selectattr('id','equalto',x.student_id)|first).full_name }}</td><td>{{ x.subject }}</td><td><span class="score s{{ x.score }}">{{ x.score }}</span></td><td>{{ x.comment }}</td>
+<td><form method="post" action="{{ url_for('t_grade_del', i=x.id) }}" onsubmit="return confirm('{{ L('Удалить оценку?','Baho o‘chirilsinmi?') }}')">{{ tok() }}<button class="btn sm danger">✕</button></form></td></tr>
+{% else %}<tr><td colspan="6" class="muted">{{ L('Оценок пока нет.','Hozircha baholar yo‘q.') }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

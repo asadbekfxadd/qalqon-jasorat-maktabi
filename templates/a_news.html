@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead"><h1>{{ L('Объявления','E’lonlar') }}</h1><p class="muted">{{ L('Показываются родителям в дневнике.','Ota-onalarga kundalikda ko‘rsatiladi.') }}</p></div>
+<form method="post" class="card grid g2" style="margin-bottom:22px">{{ tok() }}
+  <div><label>{{ L('Заголовок','Sarlavha') }}</label><input name="title" required maxlength="120"></div>
+  <div><label>{{ L('Кому','Kimga') }}</label><select name="group_id">{% if me.role=='admin' %}<option value="">{{ L('Всей школе','Butun maktabga') }}</option>{% endif %}{% for gr in groups %}<option value="{{ gr.id }}">{{ gr.name }}</option>{% endfor %}</select></div>
+  <div class="full"><label>{{ L('Текст','Matn') }}</label><textarea name="text" rows="3" maxlength="2000"></textarea></div>
+  <div><button class="btn" type="submit">{{ L('Опубликовать','E’lon qilish') }}</button></div>
+</form>
+{% for n in news %}<div class="card" style="margin-bottom:10px"><b>{{ n.title }}</b> <span class="muted small">· {{ fmt(n.day) }} · {{ n.group_id and (groups|selectattr('id','equalto',n.group_id)|map(attribute='name')|first or '…') or L('вся школа','butun maktab') }}</span>
+<p style="margin:6px 0 0;white-space:pre-line">{{ n.text }}</p>
+{% if me.role=='admin' %}<form method="post" onsubmit="return confirm('{{ L('Удалить?','O‘chirilsinmi?') }}')" style="margin-top:8px">{{ tok() }}<input type="hidden" name="id" value="{{ n.id }}"><button class="btn sm danger" name="act" value="delete">{{ L('Удалить','O‘chirish') }}</button></form>{% endif %}</div>
+{% else %}<p class="muted">{{ L('Пока ничего нет.','Hozircha hech narsa yo‘q.') }}</p>{% endfor %}
+{% endblock %}

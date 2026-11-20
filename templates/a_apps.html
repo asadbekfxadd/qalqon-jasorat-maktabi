@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead"><h1>{{ L('Заявки с сайта','Saytdan arizalar') }}</h1></div>
+<div class="seg">{% for k,v in [('',L('Все','Hammasi')),('new',L('Новые','Yangi')),('called',L('Созвонились','Bog‘lanildi')),('enrolled',L('Записаны','Yozildi')),('rejected',L('Отказ','Rad'))] %}<a class="{{ 'on' if st==k }}" href="{{ url_for('a_apps', s=k) }}">{{ v }}</a>{% endfor %}</div>
+<div class="tw"><table><tr><th>{{ L('Дата','Sana') }}</th><th>{{ L('Ребёнок','Bola') }}</th><th>{{ L('Родитель / телефон','Ota-ona / telefon') }}</th><th>{{ L('Филиал','Filial') }}</th><th>{{ L('Комментарий','Izoh') }}</th><th>{{ L('Статус','Holat') }}</th><th></th></tr>
+{% for a in apps %}<tr><td>{{ a.created.strftime('%d.%m.%y %H:%M') }}</td><td>{{ a.child }}, {{ a.age }}</td><td>{{ a.parent }}<br><a href="tel:{{ a.phone|replace(' ','') }}">{{ a.phone }}</a></td><td>{{ a.branch.city if a.branch }}</td><td>{{ a.note }}</td>
+<td><form method="post" action="{{ url_for('a_app_set', i=a.id) }}" class="row-actions">{{ tok() }}<select name="status" onchange="this.form.submit()">{% for k,v in [('new',L('новая','yangi')),('called',L('созвонились','bog‘lanildi')),('enrolled',L('записан','yozildi')),('rejected',L('отказ','rad'))] %}<option value="{{ k }}" {{ 'selected' if a.status==k }}>{{ v }}</option>{% endfor %}</select></form></td>
+<td><form method="post" action="{{ url_for('a_app_set', i=a.id) }}" onsubmit="return confirm('{{ L('Удалить заявку?','Arizani o‘chirasizmi?') }}')">{{ tok() }}<input type="hidden" name="act" value="delete"><button class="btn sm danger">✕</button></form></td></tr>
+{% else %}<tr><td colspan="7" class="muted">{{ L('Пусто.','Bo‘sh.') }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

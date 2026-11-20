@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead">{% if me.role=='parent' %}<p class="small"><a href="{{ url_for('p_home') }}">← {{ L('Все дети','Barcha bolalar') }}</a></p>{% else %}<p class="small"><a href="{{ url_for('a_students') }}">← {{ L('Ученики','O‘quvchilar') }}</a></p>{% endif %}
+<h1>{{ s.full_name }}</h1><p class="muted">{{ s.group.name if s.group else '' }}{% if s.group and s.group.teacher %} · {{ L('учитель','o‘qituvchi') }}: {{ s.group.teacher.full_name }}{% endif %}{% if s.group %} · {{ s.group.schedule }}{% endif %}</p></div>
+<div class="grid g4 keep" style="margin-bottom:26px">
+  <div class="stat"><b>{{ avg if avg is not none else '—' }}</b><span>{{ L('средний балл','o‘rtacha ball') }}</span></div>
+  <div class="stat"><b>{{ (pct ~ '%') if pct is not none else '—' }}</b><span>{{ L('посещаемость, 90 дней','davomat, 90 kun') }}</span></div>
+  <div class="stat"><b>{{ cnt.absent }}</b><span>{{ L('пропусков','qoldirilgan') }}</span></div>
+  <div class="stat"><b>{{ cnt.late }}</b><span>{{ L('опозданий','kechikish') }}</span></div>
+</div>
+{% if news %}<h2>{{ L('Объявления','E’lonlar') }}</h2>{% for n in news %}<div class="diary-day"><b>{{ n.title }}</b> <span class="muted small">{{ fmt(n.day) }}</span><br><span style="white-space:pre-line">{{ n.text }}</span></div>{% endfor %}{% endif %}
+{% if hw %}<h2 style="margin-top:28px">{{ L('Домашние задания','Uy vazifalari') }}</h2>{% for h in hw %}<div class="diary-day"><b>{{ h.title }}</b> <span class="muted small">{{ fmt(h.day) }}{% if h.due %} · {{ L('до','gacha') }} {{ fmt(h.due) }}{% endif %}</span><br><span style="white-space:pre-line">{{ h.text }}</span></div>{% endfor %}{% endif %}
+<h2 style="margin-top:28px">{{ L('Оценки','Baholar') }}</h2>
+{% if subj %}<p class="muted">{% for k, a, n in subj %}{{ k }}: <b>{{ a }}</b> ({{ n }}){% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+<div class="tw"><table><tr><th>{{ L('Дата','Sana') }}</th><th>{{ L('Предмет','Fan') }}</th><th>{{ L('Оценка','Baho') }}</th><th>{{ L('Комментарий','Izoh') }}</th></tr>
+{% for x in grades %}<tr><td>{{ fmt(x.day) }}</td><td>{{ x.subject }}</td><td><span class="score s{{ x.score }}">{{ x.score }}</span></td><td>{{ x.comment }}</td></tr>
+{% else %}<tr><td colspan="4" class="muted">{{ L('Оценок пока нет.','Hozircha baholar yo‘q.') }}</td></tr>{% endfor %}</table></div>
+<h2 style="margin-top:28px">{{ L('Посещаемость','Davomat') }}</h2>
+<div class="tw"><table><tr><th>{{ L('Дата','Sana') }}</th><th>{{ L('Статус','Holat') }}</th></tr>
+{% for a in att %}<tr><td>{{ fmt(a.day) }}</td><td><span class="tag {{ a.status }}">{{ {'present':L('был','keldi'),'late':L('опоздал','kechikdi'),'absent':L('пропуск','kelmadi')}[a.status] }}</span></td></tr>
+{% else %}<tr><td colspan="2" class="muted">{{ L('Отметок пока нет.','Hozircha belgilar yo‘q.') }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

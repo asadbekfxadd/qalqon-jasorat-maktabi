@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead"><h1>{{ L('Филиалы','Filiallar') }}</h1><p class="muted">{{ L('Эти данные показываются на главной странице.','Bu ma’lumotlar bosh sahifada ko‘rsatiladi.') }}</p></div>
+{% for b in branches %}
+<form method="post" class="card grid g3" style="margin-bottom:14px">{{ tok() }}<input type="hidden" name="id" value="{{ b.id }}">
+  <div><label>{{ L('Город','Shahar') }}</label><input name="city" value="{{ b.city }}" required></div>
+  <div><label>{{ L('Район','Tuman') }}</label><input name="area" value="{{ b.area }}"></div>
+  <div><label>{{ L('Телефон','Telefon') }}</label><input name="phone" value="{{ b.phone }}"></div>
+  <div><label>{{ L('Адрес','Manzil') }}</label><input name="address" value="{{ b.address }}"></div>
+  <div><label>{{ L('Расписание','Jadval') }}</label><input name="schedule" value="{{ b.schedule }}"></div>
+  <div><label>{{ L('Возраст','Yosh') }}</label><input name="ages" value="{{ b.ages }}"></div>
+  <div class="full"><label>{{ L('Ссылка на карту (https://…)','Xarita havolasi (https://…)') }}</label><input name="map_url" value="{{ b.map_url }}"></div>
+  <div class="row-actions"><button class="btn sm" type="submit">{{ L('Сохранить','Saqlash') }}</button><button class="btn sm danger" name="act" value="delete" onclick="return confirm('{{ L('Удалить филиал?','Filialni o‘chirasizmi?') }}')">{{ L('Удалить','O‘chirish') }}</button></div>
+</form>{% endfor %}
+<h2>{{ L('Новый филиал','Yangi filial') }}</h2>
+<form method="post" class="card grid g3">{{ tok() }}
+  <div><label>{{ L('Город','Shahar') }}</label><input name="city" required></div><div><label>{{ L('Район','Tuman') }}</label><input name="area"></div><div><label>{{ L('Телефон','Telefon') }}</label><input name="phone"></div>
+  <div><label>{{ L('Адрес','Manzil') }}</label><input name="address"></div><div><label>{{ L('Расписание','Jadval') }}</label><input name="schedule"></div><div><label>{{ L('Возраст','Yosh') }}</label><input name="ages" placeholder="10–17"></div>
+  <div class="full"><label>{{ L('Ссылка на карту (https://…)','Xarita havolasi (https://…)') }}</label><input name="map_url"></div>
+  <div><button class="btn" type="submit">{{ L('Добавить','Qo‘shish') }}</button></div>
+</form>
+{% endblock %}

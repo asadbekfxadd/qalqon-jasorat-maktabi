@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block body %}
+<main>
+<div class="hero"><div class="wrap">
+  <div>
+    <h1>Qalqon Jasorat<br>Maktabi</h1>
+    <p>{{ L('Военная школа: дисциплина, знания, физическая подготовка и мужество. Набор в группы для мальчиков и юношей 10–17 лет.','Harbiy maktab: intizom, bilim, jismoniy tayyorgarlik va jasorat. 10–17 yoshli o‘g‘il bolalar va o‘smirlar uchun guruhlarga qabul.') }}</p>
+    <div class="cta"><a class="btn" href="#signup">{{ L('Записаться','Yozilish') }}</a><a class="btn ghost" href="#locations">{{ L('Адреса и расписание','Manzillar va jadval') }}</a>
+    {% if not me %}<a class="btn ghost" href="{{ url_for('login') }}">{{ L('Дневник для родителей','Ota-onalar kundaligi') }}</a>{% endif %}</div>
+  </div>
+  <img class="emblem" src="{{ url_for('static', filename='logo.jpg') }}" alt="Qalqon Jasorat Maktabi">
+</div></div>
+
+<section class="blk" id="about"><div class="wrap">
+  <h2>{{ L('Чему учим','Nimalarni o‘rgatamiz') }}</h2>
+  <p class="muted" style="max-width:56ch;margin-bottom:28px">{{ L('Тексты на этой странице — пример, замените на реальные.','Bu sahifadagi matnlar namuna, haqiqiylariga almashtiring.') }}</p>
+  <div class="facts">
+    <div class="fact"><h3>{{ L('Строевая и дисциплина','Saf va intizom') }}</h3><p>{{ L('Построения, порядок, ответственность за себя и команду.','Saf mashqlari, tartib, o‘zi va jamoa uchun mas’uliyat.') }}</p></div>
+    <div class="fact"><h3>{{ L('Физподготовка','Jismoniy tayyorgarlik') }}</h3><p>{{ L('Кроссы, силовая, полоса препятствий, рукопашный бой.','Kross, kuch mashqlari, to‘siqlar yo‘lagi, qo‘l jangi.') }}</p></div>
+    <div class="fact"><h3>{{ L('Знания и навыки','Bilim va ko‘nikmalar') }}</h3><p>{{ L('Учёба, ориентирование, первая помощь, работа в группе.','O‘qish, mo‘ljal olish, birinchi yordam, guruhda ishlash.') }}</p></div>
+    <div class="fact"><h3>{{ L('Электронный дневник','Elektron kundalik') }}</h3><p>{{ L('Родители видят оценки, посещаемость и задания своего ребёнка.','Ota-onalar farzandining baholari, davomati va topshiriqlarini ko‘radi.') }}</p></div>
+  </div>
+</div></section>
+
+<section class="blk" id="locations" style="padding-top:0"><div class="wrap">
+  <h2>{{ L('Адреса','Manzillar') }}</h2>
+  {% if branches %}<div class="grid g3" style="margin-top:18px">
+  {% for b in branches %}<div class="branch"><h3>{{ b.city }}{% if b.area %} · {{ b.area }}{% endif %}</h3>
+    <dl><dt>{{ L('Адрес','Manzil') }}</dt><dd>{{ b.address }}</dd><dt>{{ L('Расписание','Jadval') }}</dt><dd>{{ b.schedule }}</dd><dt>{{ L('Возраст','Yosh') }}</dt><dd>{{ b.ages }}</dd>
+    {% if b.phone %}<dt>{{ L('Телефон','Telefon') }}</dt><dd><a href="tel:{{ b.phone|replace(' ','') }}">{{ b.phone }}</a></dd>{% endif %}</dl>
+    {% if b.map_url %}<p style="margin:12px 0 0"><a href="{{ b.map_url }}" target="_blank" rel="noopener">{{ L('Открыть на карте','Xaritada ochish') }}</a></p>{% endif %}</div>{% endfor %}
+  </div>{% else %}<p class="muted">{{ L('Филиалы скоро появятся.','Filiallar tez orada paydo bo‘ladi.') }}</p>{% endif %}
+</div></section>
+
+<section class="blk signup" id="signup"><div class="wrap grid g2" style="gap:44px">
+  <div><h2>{{ L('Запись на пробное занятие','Sinov mashg‘ulotiga yozilish') }}</h2><p class="muted">{{ L('Оставьте данные — администратор филиала перезвонит в течение дня. Пробное занятие бесплатно.','Ma’lumotlaringizni qoldiring — filial administratori bir kun ichida qo‘ng‘iroq qiladi. Sinov mashg‘uloti bepul.') }}</p></div>
+  <div>
+    {% with m = get_flashed_messages(with_categories=true) %}{% for c, t in m %}<div class="flash {{ c }}" role="status">{{ t }}</div>{% endfor %}{% endwith %}
+    <form method="post" action="{{ url_for('apply') }}" class="grid g2">{{ tok() }}
+      <div><label for="child">{{ L('Имя ребёнка','Bolaning ismi') }}</label><input id="child" name="child" required maxlength="120"></div>
+      <div><label for="age">{{ L('Возраст','Yoshi') }}</label><input id="age" name="age" type="number" min="5" max="18" required></div>
+      <div><label for="parent">{{ L('Имя родителя','Ota-onaning ismi') }}</label><input id="parent" name="parent" required maxlength="120" autocomplete="name"></div>
+      <div><label for="phone">{{ L('Телефон','Telefon') }}</label><input id="phone" name="phone" type="tel" placeholder="+998 90 123 45 67" required autocomplete="tel"></div>
+      <div class="full"><label for="branch">{{ L('Филиал','Filial') }}</label><select id="branch" name="branch">{% for b in branches %}<option value="{{ b.id }}">{{ b.city }} — {{ b.address }}</option>{% endfor %}</select></div>
+      <div class="full"><label for="note">{{ L('Комментарий (необязательно)','Izoh (ixtiyoriy)') }}</label><textarea id="note" name="note" rows="3" maxlength="500"></textarea></div>
+      <div class="full"><button class="btn" type="submit">{{ L('Отправить заявку','Arizani yuborish') }}</button></div>
+    </form>
+  </div>
+</div></section>
+</main>
+<footer class="foot"><div class="wrap">
+  <div><h3>Qalqon Jasorat Maktabi</h3><p>{{ L('Военная школа для мальчиков и юношей.','O‘g‘il bolalar va o‘smirlar uchun harbiy maktab.') }}</p></div>
+  <div><h3>{{ L('Связь','Aloqa') }}</h3><a href="tel:{{ SITE.phone|replace(' ','') }}">{{ SITE.phone }}</a><a href="mailto:{{ SITE.email }}">{{ SITE.email }}</a></div>
+  <div><h3>{{ L('Соцсети','Ijtimoiy tarmoqlar') }}</h3><a href="{{ SITE.instagram }}" target="_blank" rel="noopener">Instagram</a><a href="{{ SITE.telegram }}" target="_blank" rel="noopener">Telegram</a></div>
+</div></footer>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pagehead"><h1>{{ L('Обзор школы','Maktab umumiy ko‘rinishi') }}</h1></div>
+<div class="grid g4 keep" style="margin-bottom:28px">
+  <div class="stat"><b>{{ c.students }}</b><span>{{ L('учеников','o‘quvchi') }}</span></div>
+  <div class="stat"><b>{{ c.groups }}</b><span>{{ L('групп','guruh') }}</span></div>
+  <div class="stat"><b>{{ c.teachers }}</b><span>{{ L('учителей','o‘qituvchi') }}</span></div>
+  <div class="stat"><b>{{ c.new }}</b><span>{{ L('новых заявок','yangi ariza') }}</span></div>
+</div>
+<h2>{{ L('Последние заявки','So‘nggi arizalar') }}</h2>
+{% if apps %}<div class="tw"><table><tr><th>{{ L('Дата','Sana') }}</th><th>{{ L('Ребёнок','Bola') }}</th><th>{{ L('Родитель / телефон','Ota-ona / telefon') }}</th><th>{{ L('Филиал','Filial') }}</th><th></th></tr>
+{% for a in apps %}<tr><td>{{ a.created.strftime('%d.%m %H:%M') }}</td><td>{{ a.child }}, {{ a.age }}</td><td>{{ a.parent }}<br><a href="tel:{{ a.phone|replace(' ','') }}">{{ a.phone }}</a></td><td>{{ a.branch.city if a.branch }}</td><td><span class="tag {{ a.status }}">{{ {'new':L('новая','yangi'),'called':L('созвонились','bog‘lanildi'),'enrolled':L('записан','yozildi'),'rejected':L('отказ','rad')}[a.status] }}</span></td></tr>{% endfor %}</table></div>
+<p><a href="{{ url_for('a_apps') }}">{{ L('Все заявки','Barcha arizalar') }}</a></p>
+{% else %}<p class="muted">{{ L('Заявок пока нет.','Hozircha arizalar yo‘q.') }}</p>{% endif %}
+<h2 style="margin-top:30px">{{ L('С чего начать','Nimadan boshlash') }}</h2>
+<ol class="muted"><li>{{ L('Добавьте филиалы.','Filiallarni qo‘shing.') }}</li><li>{{ L('Создайте учителей и родителей в «Пользователях» — пароль покажется один раз.','«Foydalanuvchilar»da o‘qituvchi va ota-onalarni yarating — parol bir marta ko‘rsatiladi.') }}</li><li>{{ L('Создайте группы и назначьте учителя.','Guruhlar yarating va o‘qituvchi tayinlang.') }}</li><li>{{ L('Добавьте учеников и привяжите родителя.','O‘quvchilarni qo‘shing va ota-onani biriktiring.') }}</li></ol>
+{% endblock %}
