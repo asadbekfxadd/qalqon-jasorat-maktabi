@@ -13,7 +13,8 @@ app = Flask(__name__)
 PROD = os.environ.get("PRODUCTION") == "1"
 app.config.update(
     SECRET_KEY=os.environ.get("SECRET_KEY") or ("dev-only-" + secrets.token_hex(8) if not PROD else None),
-    SQLALCHEMY_DATABASE_URI=(os.environ.get("DATABASE_URL") or "sqlite:///qalqon.db").replace("postgres://", "postgresql://", 1),
+    SQLALCHEMY_DATABASE_URI=re.sub(r"^postgres(ql)?://", "postgresql+psycopg2://", os.environ.get("DATABASE_URL") or "sqlite:///qalqon.db"),
+    SQLALCHEMY_ENGINE_OPTIONS={"pool_pre_ping": True},
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", SESSION_COOKIE_SECURE=PROD,
     PERMANENT_SESSION_LIFETIME=timedelta(days=14),
