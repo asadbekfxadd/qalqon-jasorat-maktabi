@@ -1,0 +1,26 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Hisoblar va rollar','Аккаунты и роли') }}</h1></div>
+<form class="card" method="post" style="margin-bottom:16px">{{ tok() }}<input type="hidden" name="act" value="create"><h3>{{ L('Yangi hisob','Новая учётная запись') }}</h3>
+<div class="row"><div><label>{{ L('Rol','Роль') }}</label><select name="role">{% for r in ['teacher','parent','student','admin'] %}<option value="{{ r }}">{{ nm(ROLE,r) }}</option>{% endfor %}</select></div>
+<div style="flex:2 1 220px"><label>{{ L('F.I.Sh.','ФИО') }}</label><input name="full_name" required></div><div><label>{{ L('Login (ixtiyoriy)','Логин (необязательно)') }}</label><input name="username" placeholder="auto"></div>
+<div><label>{{ L('Parol (ixtiyoriy)','Пароль (необязательно)') }}</label><input name="password" placeholder="auto"></div></div>
+<div class="row" style="margin-top:10px"><div><label>{{ L('Telefon','Телефон') }}</label><input name="phone"></div><div><label>Email</label><input name="email" type="email"></div><div class="fit"><button class="btn">{{ L('Yaratish','Создать') }}</button></div></div>
+<p class="muted small" style="margin:10px 0 0">{{ L('Bo‘sh qoldirsangiz, login va parol avtomatik yaratiladi; foydalanuvchi birinchi kirishda parolni almashtiradi.','Если оставить пустым — логин и пароль создаются автоматически; пользователь сменит пароль при первом входе.') }}</p></form>
+<div class="tabs"><a href="?" class="{{ 'on' if not role }}">{{ L('Hammasi','Все') }}</a>{% for r in ROLE %}<a href="?role={{ r }}" class="{{ 'on' if role==r }}">{{ nm(ROLE,r) }}</a>{% endfor %}
+<form style="margin-left:auto;display:flex;gap:6px"><input name="q" placeholder="{{ L('Qidirish','Поиск') }}" value="{{ request.args.q or '' }}" style="width:200px">{% if role %}<input type="hidden" name="role" value="{{ role }}">{% endif %}<button class="btn ghost sm">⌕</button></form></div>
+<div class="tw"><table><tr><th>{{ L('Login','Логин') }}</th><th>{{ L('F.I.Sh.','ФИО') }}</th><th>{{ L('Rol','Роль') }}</th><th>{{ L('Telefon / Email','Телефон / Email') }}</th><th>{{ L('Oxirgi kirish','Посл. вход') }}</th><th></th></tr>
+{% for u in items %}<tr><form id="f{{ u.id }}" method="post">{{ tok() }}<input type="hidden" name="id" value="{{ u.id }}"></form>
+<td><b>{{ u.username }}</b>{% if u.is_demo %} <span class="pill demo">DEMO</span>{% endif %}{% if not u.active %} <span class="pill rejected">{{ L('o‘chirilgan','отключён') }}</span>{% endif %}</td>
+<td><input form="f{{ u.id }}" name="full_name" value="{{ u.full_name }}"></td>
+<td><select form="f{{ u.id }}" name="role" {{ 'disabled' if u.id==me.id }}>{% for r in ROLE %}<option value="{{ r }}" {{ 'selected' if u.role==r }}>{{ nm(ROLE,r) }}</option>{% endfor %}</select></td>
+<td><input form="f{{ u.id }}" name="phone" value="{{ u.phone }}" placeholder="tel" style="margin-bottom:4px"><input form="f{{ u.id }}" name="email" value="{{ u.email }}" placeholder="email"></td>
+<td class="muted small nowrap">{{ fmtdt(u.last_login) or '—' }}</td>
+<td class="nowrap"><button form="f{{ u.id }}" name="act" value="save" class="btn sm">{{ L('Saqlash','Сохранить') }}</button>
+<button form="f{{ u.id }}" name="act" value="reset" class="btn ghost sm" onclick="return confirm('{{ L('Yangi vaqtinchalik parol berilsinmi?','Выдать новый временный пароль?') }}')">{{ L('Parol','Пароль') }}</button>
+{% if u.id!=me.id %}<button form="f{{ u.id }}" name="act" value="toggle" class="btn danger sm">{{ L('Yoqish/o‘chirish','Вкл/выкл') }}</button>{% endif %}</td></tr>{% endfor %}</table></div>
+<div class="card" style="margin-top:16px"><h3>{{ L('Rollar va ruxsatlar','Роли и доступы') }}</h3><div class="tw"><table>
+<tr><th>{{ L('Rol','Роль') }}</th><th>{{ L('Nimani ko‘radi','Что видит') }}</th><th>{{ L('Nima qila oladi','Что может') }}</th></tr>
+<tr><td>{{ nm(ROLE,'admin') }}</td><td>{{ L('Butun tizim','Вся система') }}</td><td>{{ L('Hisoblar, sinflar, jadval, arizalar, kontent, hisobotlar, jurnal','Аккаунты, классы, расписание, заявки, контент, отчёты, журнал') }}</td></tr>
+<tr><td>{{ nm(ROLE,'teacher') }}</td><td>{{ L('Faqat biriktirilgan sinf va fanlar','Только назначенные классы и предметы') }}</td><td>{{ L('Baho, davomat, uy vazifasi, material, xabar, e’lon','Оценки, посещаемость, ДЗ, материалы, сообщения, объявления') }}</td></tr>
+<tr><td>{{ nm(ROLE,'parent') }}</td><td>{{ L('Faqat o‘z farzandlari','Только свои дети') }}</td><td>{{ L('Ko‘rish, ustozlarga yozish','Просмотр, переписка с учителями') }}</td></tr>
+<tr><td>{{ nm(ROLE,'student') }}</td><td>{{ L('Faqat o‘zi','Только свои данные') }}</td><td>{{ L('Ko‘rish, uy vazifasini topshirish','Просмотр, сдача домашних заданий') }}</td></tr></table></div></div>{% endblock %}

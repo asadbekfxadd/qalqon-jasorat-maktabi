@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('O‘zlashtirish','Успеваемость') }}</h1><a class="btn ghost" href="{{ url_for('teacher.reports') }}">{{ L('Hisobotlar','Отчёты') }} →</a></div>
+{% for o in out %}<div class="card" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><h3>{{ o.kl.name }} · {{ subj(o.sub) }}</h3><div><span class="muted small">{{ L('Sinf o‘rtachasi','Средний по классу') }}</span> <span class="num">{{ o.avg if o.avg is not none else '—' }}</span></div></div>
+<div style="display:flex;gap:6px;margin:6px 0 14px">{% for k in [5,4,3,2,1] %}<span class="pill">{{ k }}: {{ o.dist[k] }}</span>{% endfor %}</div>
+<div class="tw"><table><tr><th>{{ L('O‘quvchi','Ученик') }}</th><th>{{ L('O‘rtacha','Средний') }}</th><th>{{ L('Davomat','Посещ.') }}</th></tr>{% for st,a,r in o.rows %}<tr><td><a href="{{ url_for('teacher.student', sid=st.id) }}">{{ st.full_name }}</a></td><td>{% if a is not none %}<span class="sc s{{ a|round|int }}">{{ a }}</span>{% else %}—{% endif %}</td><td>{{ r ~ '%' if r is not none else '—' }}</td></tr>{% endfor %}</table></div></div>
+{% else %}<div class="empty">—</div>{% endfor %}{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "app.html" %}{% block title %}{{ L('Boshqaruv paneli','Панель управления') }} — Qalqon{% endblock %}
+{% block main %}
+<div class="page-h"><h1>{{ L('Boshqaruv paneli','Панель управления') }}</h1>
+<div class="tabs" style="margin:0"><a href="?" class="{{ 'on' if not real }}">{{ L('Barcha ma’lumotlar','Все данные') }}</a><a href="?real=1" class="{{ 'on' if real }}">{{ L('Faqat haqiqiy','Только реальные') }}</a></div></div>
+{% if demo and not real %}<div class="flash warn">{{ L('Diqqat: statistikaga DEMO ma’lumotlar kiritilgan. Haqiqiy raqamlar uchun «Faqat haqiqiy» ni tanlang yoki demo’ni o‘chiring.','Внимание: в статистику включены ДЕМО-данные. Выберите «Только реальные» или удалите демо.') }} <a href="{{ url_for('admin.demo') }}">{{ L('Demo boshqaruvi','Управление демо') }}</a></div>{% endif %}
+{% set k = st.kpi %}
+<div class="grid g4">
+ <a class="card kpi" href="{{ url_for('admin.students') }}" style="text-decoration:none"><span>{{ L('O‘quvchilar','Ученики') }}</span><b>{{ k.students }}</b></a>
+ <div class="card kpi"><span>{{ L('O‘qituvchilar','Учителя') }}</span><b>{{ k.teachers }}</b></div>
+ <a class="card kpi" href="{{ url_for('admin.classes') }}" style="text-decoration:none"><span>{{ L('Sinflar','Классы') }}</span><b>{{ k.classes }}</b></a>
+ <a class="card kpi" href="{{ url_for('admin.applications', status='new') }}" style="text-decoration:none"><span>{{ L('Yangi arizalar','Новые заявки') }}</span><b>{{ k.new_apps }}</b></a>
+ <div class="card kpi"><span>{{ L('Bugungi davomat','Посещаемость сегодня') }}</span><b>{{ k.att_rate ~ '%' if k.att_rate is not none else '—' }}</b><em>{{ L('belgilangan','отмечено') }}: {{ k.marked }}</em></div>
+ <div class="card kpi"><span>{{ L('O‘rtacha o‘zlashtirish','Средний академ. показатель') }}</span><b>{{ k.avg if k.avg is not none else '—' }}</b><em>{{ L('o‘quv yili','учебный год') }}</em></div>
+ <div class="card kpi"><span>{{ L('Bugun yo‘qlar','Отсутствуют сегодня') }}</span><b>{{ k.absent }}</b></div>
+ <a class="card kpi" href="{{ url_for('admin.audit_log') }}" style="text-decoration:none"><span>{{ L('So‘nggi voqealar','Последние события') }}</span><b>{{ events|length }}</b><em>{{ L('jurnalga o‘tish','к журналу') }}</em></a>
+</div>
+<div class="grid g2" style="margin-top:14px">
+ <div class="card"><h3>{{ L('O‘zlashtirish dinamikasi','Динамика успеваемости') }}</h3><div class="chart"><canvas id="c1"></canvas></div></div>
+ <div class="card"><h3>{{ L('Oylik davomat, %','Посещаемость по месяцам, %') }}</h3><div class="chart"><canvas id="c2"></canvas></div></div>
+ <div class="card"><h3>{{ L('Sinflar natijalari','Результаты по классам') }}</h3><div class="chart"><canvas id="c3"></canvas></div></div>
+ <div class="card"><h3>{{ L('Fanlar bo‘yicha o‘zlashtirish','Успеваемость по предметам') }}</h3><div class="chart"><canvas id="c4"></canvas></div></div>
+ <div class="card"><h3>{{ L('Arizalar statistikasi','Статистика заявок') }}</h3><div class="chart"><canvas id="c5"></canvas></div></div>
+ <div class="card"><h3>{{ L('Arizalar oylar bo‘yicha','Заявки по месяцам') }}</h3><div class="chart"><canvas id="c6"></canvas></div></div>
+</div>
+<div class="grid g2" style="margin-top:14px">
+ <div class="card"><h3>{{ L('So‘nggi voqealar','Последние события') }}</h3><ul class="list">{% for e in events %}<li><span><b>{{ e.action }}</b> <span class="muted small">{{ e.username }} {{ e.detail[:60] }}</span></span><span class="muted small nowrap">{{ fmtdt(e.created) }}</span></li>{% else %}<li class="muted">—</li>{% endfor %}</ul></div>
+ <div class="card"><h3>{{ L('So‘nggi arizalar','Последние заявки') }}</h3><ul class="list">{% for a in latest_apps %}<li><a href="{{ url_for('admin.application', aid=a.id) }}">{{ a.number }} · {{ a.child_name }}</a><span class="pill {{ a.status }}">{{ nm(STATUS, a.status) }}</span></li>{% else %}<li class="muted">{{ L('Hozircha yo‘q','Пока нет') }}</li>{% endfor %}</ul></div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='vendor/chart.umd.js') }}"></script>
+<script type="application/json" id="cd">{{ st.charts|tojson }}</script>
+<script>
+(function(){
+var D=JSON.parse(document.getElementById('cd').textContent),charts=[];
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function build(){
+ charts.forEach(function(c){c.destroy()});charts=[];
+ if(!window.Chart)return;
+ var gold=css('--gold'),gold2=css('--gold2'),ink=css('--ink'),mut=css('--muted'),line=css('--line'),info=css('--info'),ok=css('--ok'),warn=css('--warn'),bad=css('--bad');
+ Chart.defaults.color=mut;Chart.defaults.borderColor=line;Chart.defaults.font.family='Inter,sans-serif';
+ var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}};
+ function mk(id,cfg){var el=document.getElementById(id);if(el)charts.push(new Chart(el,cfg))}
+ mk('c1',{type:'line',data:{labels:D.months,datasets:[{data:D.perf,borderColor:gold2,backgroundColor:gold+'33',fill:true,tension:.3,spanGaps:true,pointRadius:4}]},options:Object.assign({},base,{scales:{y:{min:1,max:5}}})});
+ mk('c2',{type:'bar',data:{labels:D.months,datasets:[{data:D.att,backgroundColor:gold,borderRadius:5}]},options:Object.assign({},base,{scales:{y:{min:0,max:100}}})});
+ mk('c3',{type:'bar',data:{labels:D.classes.map(function(x){return x[0]}),datasets:[{data:D.classes.map(function(x){return x[1]}),backgroundColor:info,borderRadius:5}]},options:Object.assign({},base,{scales:{y:{min:1,max:5}}})});
+ mk('c4',{type:'bar',data:{labels:D.subjects.map(function(x){return x[0]}),datasets:[{data:D.subjects.map(function(x){return x[1]}),backgroundColor:gold,borderRadius:5}]},options:Object.assign({},base,{indexAxis:'y',scales:{x:{min:1,max:5}}})});
+ mk('c5',{type:'doughnut',data:{labels:D.app_status.map(function(x){return x[0]}),datasets:[{data:D.app_status.map(function(x){return x[1]}),backgroundColor:[info,warn,'#9a82d6','#4fb3b3',ok,bad],borderColor:css('--card')}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:ink,boxWidth:12}}}}});
+ mk('c6',{type:'bar',data:{labels:D.months,datasets:[{data:D.app_months,backgroundColor:info,borderRadius:5}]},options:Object.assign({},base,{scales:{y:{beginAtZero:true,ticks:{precision:0}}}})});
+}
+window.qRedraw=build;build();
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('O‘quvchilar','Ученики') }}</h1><a class="btn" href="{{ url_for('admin.student') }}">+ {{ L('O‘quvchi qo‘shish','Добавить ученика') }}</a></div>
+<form class="card row" style="margin-bottom:16px"><div style="flex:2 1 220px"><label>{{ L('Qidiruv','Поиск') }}</label><input name="q" value="{{ request.args.q or '' }}"></div>
+<div><label>{{ L('Sinf','Класс') }}</label><select name="class"><option value="">—</option>{% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if request.args['class']==c.id|string }}>{{ c.name }}</option>{% endfor %}</select></div><div class="fit"><button class="btn">{{ L('Topish','Найти') }}</button></div></form>
+<div class="tw"><table><tr><th>{{ L('F.I.Sh.','ФИО') }}</th><th>{{ L('Sinf','Класс') }}</th><th>{{ L('Tug‘ilgan','Дата рожд.') }}</th><th>{{ L('Ota-ona','Родители') }}</th><th>{{ L('O‘rtacha','Средний') }}</th></tr>
+{% for s in items %}<tr><td><a href="{{ url_for('admin.student', sid=s.id) }}"><b>{{ s.full_name }}</b></a>{% if s.is_demo %} <span class="pill demo">DEMO</span>{% endif %}{% if not s.active %} <span class="pill rejected">{{ L('nofaol','неактивен') }}</span>{% endif %}</td>
+<td>{{ s.klass.name if s.klass else '—' }}</td><td>{{ fmt(s.birth_date) }}</td><td>{{ s.parents|map(attribute='full_name')|join(', ') or '—' }}</td><td>—</td></tr>
+{% else %}<tr><td colspan="5" class="muted">{{ L('O‘quvchilar yo‘q.','Учеников нет.') }}</td></tr>{% endfor %}</table></div>{% endblock %}

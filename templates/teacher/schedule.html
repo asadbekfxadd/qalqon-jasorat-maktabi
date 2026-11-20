@@ -1,0 +1,4 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Mening jadvalim','Моё расписание') }}</h1></div>
+<div class="tw"><table><tr><th>{{ L('Kun','День') }}</th><th>№</th><th>{{ L('Vaqt','Время') }}</th><th>{{ L('Sinf','Класс') }}</th><th>{{ L('Fan','Предмет') }}</th><th>{{ L('Xona','Каб.') }}</th></tr>
+{% for l in lessons %}<tr><td>{{ WEEKDAYS[l.weekday][1 if lang=='ru' else 0] }}</td><td>{{ l.number }}</td><td>{{ l.start }}–{{ l.end }}</td><td>{{ l.klass.name }}</td><td>{{ subj(l.subject) }}</td><td>{{ l.room }}</td></tr>{% else %}<tr><td colspan="6" class="muted">—</td></tr>{% endfor %}</table></div>{% endblock %}

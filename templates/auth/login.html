@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}{{ L('Kirish','Вход') }} — Qalqon{% endblock %}
+{% block body %}<div class="wrap" style="max-width:440px;padding-top:56px;padding-bottom:60px">
+<div class="card"><h2>{{ L('Tizimga kirish','Вход в систему') }}</h2>
+<p class="muted small">{{ L('Administrator, o‘qituvchi, ota-ona va o‘quvchilar uchun.','Для администраторов, учителей, родителей и учеников.') }}</p>
+<form method="post" class="stack">{{ tok() }}
+<div><label>{{ L('Login','Логин') }}</label><input name="username" autocomplete="username" required autofocus></div>
+<div><label>{{ L('Parol','Пароль') }}</label><input name="password" type="password" autocomplete="current-password" required></div>
+<button class="btn" style="width:100%;justify-content:center">{{ L('Kirish','Войти') }}</button></form>
+<p class="small" style="margin-bottom:0"><a href="{{ url_for('auth.forgot') }}">{{ L('Parolni unutdingizmi?','Забыли пароль?') }}</a></p></div>
+<p class="muted small" style="text-align:center">{{ L('Hisobni maktab ma’muriyati beradi.','Учётные записи выдаёт администрация школы.') }} <a href="{{ url_for('pub.qabul') }}">{{ L('Qabulga ariza','Подать заявку на поступление') }}</a></p>
+</div>{% endblock %}

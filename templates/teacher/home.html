@@ -1,0 +1,12 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Salom','Здравствуйте') }}, {{ me.full_name.split()[0] }}</h1><span class="muted">{{ fmt(today()) }}</span></div>
+<div class="grid g4">
+<div class="card kpi"><span>{{ L('Mening sinflarim','Мои классы') }}</span><b>{{ cls|length }}</b></div>
+<div class="card kpi"><span>{{ L('Mening fanlarim','Мои предметы') }}</span><b>{{ pairs|map(attribute=1)|map(attribute='id')|unique|list|length }}</b></div>
+<div class="card kpi"><span>{{ L('O‘quvchilar','Учеников') }}</span><b>{{ n_students }}</b></div>
+<a class="card kpi" href="{{ url_for('teacher.homework') }}" style="text-decoration:none"><span>{{ L('Tekshirilmagan ishlar','Непроверенные задания') }}</span><b>{{ unchecked }}</b></a></div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>{{ L('Bugungi dars jadvali','Расписание на сегодня') }}</h3><ul class="list">{% for l in lessons %}<li><span><b>{{ l.start }}–{{ l.end }}</b> · {{ subj(l.subject) }} <span class="muted">({{ l.klass.name }}{{ ', ' ~ l.room if l.room }})</span></span></li>{% else %}<li class="muted">{{ L('Bugun darslar yo‘q.','Сегодня уроков нет.') }}</li>{% endfor %}</ul>
+{% if upcoming %}<h4 style="margin-top:14px">{{ L('Yaqin darslar','Ближайшие уроки') }}</h4><ul class="list">{% for l in upcoming %}<li><span>{{ l.start }} · {{ l.klass.name }} · {{ subj(l.subject) }}</span><a class="btn sm" href="{{ url_for('teacher.journal', **{'class': l.class_id, 'subject': l.subject_id}) }}">{{ L('Jurnal','Журнал') }}</a></li>{% endfor %}</ul>{% endif %}</div>
+<div class="card"><h3>{{ L('Sinflar va fanlar','Классы и предметы') }}</h3>{% if pairs %}<ul class="list">{% for kl,sub in pairs %}<li><span><b>{{ kl.name }}</b> · {{ subj(sub) }} <span class="muted small">({{ kl.students|length }})</span></span><a class="btn ghost sm" href="{{ url_for('teacher.journal', **{'class': kl.id, 'subject': sub.id}) }}">{{ L('Jurnal','Журнал') }}</a></li>{% endfor %}</ul>
+{% else %}<div class="empty">{{ L('Sizga hali sinf biriktirilmagan. Administratorga murojaat qiling.','Вам пока не назначены классы. Обратитесь к администратору.') }}</div>{% endif %}</div></div>{% endblock %}

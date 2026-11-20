@@ -1,35 +1,24 @@
-# Qalqon Jasorat Maktabi — сайт + дневник + кабинеты
+# Qalqon Jasorat Maktabi — цифровая платформа школы
 
-Flask + PostgreSQL (локально SQLite). Языки: русский и узбекский (переключатель RU/UZ).
+Flask + SQLAlchemy (PostgreSQL на Railway, SQLite локально). Сайт, электронная запись (Qabul), админ-панель с дашбордом,
+кабинеты учителя / родителя / ученика, электронный дневник, уведомления, журнал действий.
+Язык по умолчанию — узбекский (Latin), переключатель RU; тёмная/светлая тема.
 
-## Что внутри
-- **Публичный сайт**: описание, филиалы (из базы), форма записи → заявки в админке (+ уведомление в Telegram).
-- **Админ**: обзор, заявки (статусы), ученики, группы, пользователи (учителя / родители / админы), филиалы, объявления.
-- **Учитель**: свои группы, посещаемость по дням, оценки 1–5 с комментарием, домашние задания, объявления группе.
-- **Родитель**: дневник своего ребёнка — средний балл, посещаемость, оценки, задания, объявления.
-- Безопасность: хэши паролей, CSRF, права по ролям (родитель видит только своих детей, учитель только свои группы), ограничение попыток входа, принудительная смена временного пароля.
+## Структура
+- `qalqon/models.py` — БД (таблицы с префиксом `q_`), `core.py` — права, уведомления, отчёты, файлы,
+  `public.py` / `auth.py` / `admin.py` / `teacher.py` / `cabinet.py` — модули (blueprints), `seed.py` — демо-данные.
+- Бизнес-логика отделена от шаблонов — на этой базе можно добавить JSON API / мобильное приложение.
 
-## Локальный запуск
-```bash
-python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-flask --app app seed-demo     # демо-данные (необязательно): teacher/teacher123, parent/parent123
-python app.py                 # http://localhost:5000   админ: admin / admin12345
-```
+## Запуск локально
+    pip install -r requirements.txt
+    python -c "from app import app; app.run(port=5000)"   # admin / admin12345 (только вне PRODUCTION)
+    flask --app app seed-demo      # демо-данные (все помечены DEMO), пароль demo-аккаунтов Demo2026pass
+    flask --app app purge-demo     # удалить демо
 
-## Деплой на Railway
-1. Залейте папку в GitHub, в Railway: New Project → Deploy from GitHub.
-2. Добавьте базу: + New → Database → PostgreSQL (переменная `DATABASE_URL` подставится сама).
-3. В Variables сервиса задайте: `PRODUCTION=1`, `SECRET_KEY` (длинная случайная строка), `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
-   Необязательно: `SITE_PHONE`, `SITE_EMAIL`, `SITE_INSTAGRAM`, `SITE_TELEGRAM`, `TG_BOT_TOKEN`, `TG_CHAT_ID`.
-4. Settings → Networking → Generate Domain. Админ создаётся при первом запуске.
+## Railway (переменные)
+`PRODUCTION=1`, `SECRET_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `DATABASE_URL=${{Postgres.DATABASE_URL}}`.
+Необязательно: `TG_BOT_TOKEN`, `TG_CHAT_ID` (Telegram), `SMTP_HOST/PORT/USER/PASS/FROM` (Email), `SITE_PHONE`, `SITE_EMAIL`,
+`SITE_INSTAGRAM`, `SITE_TELEGRAM`. Файлы (документы, фото) хранятся в БД и доступны только через проверку прав.
 
-## Как пользоваться
-Админ → Филиалы → Пользователи (создать учителей и родителей; временный пароль показывается один раз) →
-Группы (назначить учителя) → Ученики (привязать группу и родителя). Дальше учитель отмечает посещаемость и ставит оценки, родители видят всё в «Дневнике».
-
-## Замечания
-- Тексты на главной (программа обучения) — примеры, замените в `templates/index.html`.
-- Узбекский перевод написан без носителя — стоит проверить.
-- Таблицы создаются автоматически; при изменении моделей в будущем понадобятся миграции (Flask-Migrate).
-- Для продакшена держите 1 воркер gunicorn (лимит попыток входа хранится в памяти).
+## Роли
+admin — вся система · teacher — только назначенные классы/предметы · parent — только свои дети · student — только свои данные.

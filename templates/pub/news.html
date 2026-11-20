@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="padding-top:40px;padding-bottom:60px">
+<h1>{{ L('Yangiliklar va tadbirlar','Новости и события') }}</h1>
+<div class="tabs"><a href="?" class="{{ 'on' if not cat }}">{{ L('Hammasi','Все') }}</a>{% for k in NEWS_CATS %}<a href="?cat={{ k }}" class="{{ 'on' if cat==k }}">{{ nm(NEWS_CATS,k) }}</a>{% endfor %}</div>
+{% if items %}<div class="grid g3">{% for n in items %}<a class="nc" href="{{ url_for('pub.news_one', nid=n.id) }}"><div class="im">{% if n.image_id %}<img loading="lazy" src="{{ url_for('auth.file', fid=n.image_id) }}" alt="">{% else %}Q{% endif %}</div><div class="tx"><span class="pill">{{ nm(NEWS_CATS, n.category) }}</span> <span class="muted small">{{ fmt(n.day) }}</span>{% if n.is_demo %} <span class="pill demo">DEMO</span>{% endif %}<h3>{{ pick(n,'title') }}</h3><p>{{ pick(n,'body')[:140] }}</p></div></a>{% endfor %}</div>
+{% else %}<div class="empty">{{ L('Yangiliklar yo‘q.','Новостей нет.') }}</div>{% endif %}</div>{% endblock %}

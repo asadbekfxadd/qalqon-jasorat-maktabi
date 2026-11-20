@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="page-h"><h1>{{ L('Hisobot','Отчёт') }}</h1><button class="btn ghost no-print" onclick="window.print()">🖨 {{ L('Chop etish','Печать') }}</button></div>
+<div class="tabs no-print">{% for k in PERIODS %}<a href="{{ url_for('cabinet.report', c=st.id, p=k) }}" class="{{ 'on' if kind==k }}">{{ nm(PERIODS,k) }}</a>{% endfor %}</div>
+{% include "partials/student_report.html" %}{% endblock %}

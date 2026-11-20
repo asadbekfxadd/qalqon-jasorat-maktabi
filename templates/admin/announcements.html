@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('E’lonlar','Объявления') }}</h1></div>
+<form class="card stack" method="post" style="margin-bottom:16px">{{ tok() }}<input type="hidden" name="act" value="create">
+<div class="row"><div style="flex:3 1 280px"><label>{{ L('Sarlavha','Заголовок') }}</label><input name="title" required></div><div><label>{{ L('Kimga','Кому') }}</label><select name="class_id"><option value="">{{ L('Butun maktab','Вся школа') }}</option>{% for c in classes %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></div></div>
+<div><label>{{ L('Matn','Текст') }}</label><textarea name="text"></textarea></div><div><button class="btn">{{ L('E’lon qilish','Опубликовать') }}</button> <span class="muted small">{{ L('Barcha ota-onalar va o‘quvchilarga bildirishnoma yuboriladi.','Всем адресатам уйдёт уведомление.') }}</span></div></form>
+{% for a in items %}<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><b>{{ a.title }}{% if a.is_demo %} <span class="pill demo">DEMO</span>{% endif %}</b><span class="muted small">{{ fmtdt(a.created) }} · {{ a.klass.name if a.klass else L('Butun maktab','Вся школа') }}</span></div><p style="white-space:pre-wrap;margin:.4em 0">{{ a.text }}</p>
+<form method="post" data-confirm="?">{{ tok() }}<input type="hidden" name="act" value="delete"><input type="hidden" name="id" value="{{ a.id }}"><button class="btn danger sm">{{ L('O‘chirish','Удалить') }}</button></form></div>{% endfor %}{% endblock %}

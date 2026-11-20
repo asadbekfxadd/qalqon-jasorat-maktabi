@@ -1,0 +1,18 @@
+{# r = student_report #}
+<div class="card" id="rep">
+  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><div class="avatar lg">{{ r.student.full_name[:1] }}</div>
+  <div><h2 style="margin:0">{{ r.student.full_name }}</h2><div class="muted">{{ r.student.klass.name if r.student.klass else '—' }} · {{ nm(PERIODS, r.kind) }}: {{ fmt(r.start) }} – {{ fmt(r.end) }}</div></div>
+  <div style="margin-left:auto;text-align:right"><div class="muted small">{{ L('O‘rtacha ball','Средний балл') }}</div><div class="num">{{ r.avg if r.avg is not none else '—' }}</div></div></div>
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card flat kpi"><b>{{ r.att.rate ~ '%' if r.att.rate is not none else '—' }}</b><span>{{ L('Davomat','Посещаемость') }}</span></div>
+    <div class="card flat kpi"><b>{{ r.att.absent + r.att.excused }}</b><span>{{ L('Qoldirilgan kunlar','Пропущено дней') }}</span></div>
+    <div class="card flat kpi"><b>{{ r.att.late }}</b><span>{{ L('Kechikishlar','Опозданий') }}</span></div>
+    <div class="card flat kpi"><b>{{ r.hw.done }}/{{ r.hw.total }}</b><span>{{ L('Uy vazifalari topshirildi','ДЗ сдано') }}</span></div>
+  </div>
+  <div class="tw"><table><tr><th>{{ L('Fan','Предмет') }}</th><th>{{ L('Baholar soni','Оценок') }}</th><th>{{ L('O‘rtacha','Средний') }}</th></tr>
+  {% for x in r.subjects %}<tr><td>{{ subj(x.subject) }}</td><td>{{ x.n }}</td><td><span class="sc s{{ x.avg|round|int }}">{{ x.avg }}</span></td></tr>
+  {% else %}<tr><td colspan="3" class="muted">{{ L('Bu davrda baholar yo‘q.','За этот период оценок нет.') }}</td></tr>{% endfor %}</table></div>
+  {% if r.remarks or r.ach %}<div class="grid g2" style="margin-top:14px">
+    <div><h4>{{ L('Izohlar va rag‘batlar','Замечания и поощрения') }}</h4><ul class="list">{% for m in r.remarks %}<li><span>{{ '👍' if m.kind=='praise' else '⚠' }} {{ m.text }}</span><span class="muted small">{{ fmt(m.day) }}</span></li>{% else %}<li class="muted">—</li>{% endfor %}</ul></div>
+    <div><h4>{{ L('Yutuqlar','Достижения') }}</h4><ul class="list">{% for a in r.ach %}<li><span>🏅 {{ a.title }}</span><span class="muted small">{{ fmt(a.day) }}</span></li>{% else %}<li class="muted">—</li>{% endfor %}</ul></div></div>{% endif %}
+</div>

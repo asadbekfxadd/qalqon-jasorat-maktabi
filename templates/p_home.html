@@ -1,6 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="pagehead"><h1>{{ L('Дневник','Kundalik') }}</h1></div>
-{% if kids %}<div class="grid g3">{% for s in kids %}<a class="card" href="{{ url_for('p_child', sid=s.id) }}" style="text-decoration:none;color:inherit"><h3>{{ s.full_name }}</h3><p class="muted" style="margin:0">{{ s.group.name if s.group else L('без группы','guruhsiz') }}</p></a>{% endfor %}</div>
-{% else %}<p class="muted">{{ L('К вашему профилю пока не привязан ни один ребёнок. Обратитесь к администратору школы.','Profilingizga hali bola biriktirilmagan. Maktab administratoriga murojaat qiling.') }}</p>{% endif %}
-{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="max-width:620px;padding-top:56px;padding-bottom:70px;text-align:center">
+<div class="card" style="padding:40px"><div class="eyebrow">{{ L('Ariza qabul qilindi','Заявка принята') }}</div><div class="num">{{ a.number }}</div>
+<h2>{{ L('Rahmat!','Спасибо!') }}</h2><p>{{ L('Arizangiz yuborildi. Ma’muriyat siz bilan telefon orqali bog‘lanadi.','Ваша заявка отправлена. Администрация свяжется с вами по телефону.') }}</p>
+<p class="muted small">{{ L('Ariza raqamini saqlab qo‘ying — holatni shu raqam va telefon bilan tekshirasiz.','Сохраните номер заявки — статус можно проверить по номеру и телефону.') }}</p>
+<span class="pill {{ a.status }}">{{ nm(STATUS, a.status) }}</span><p style="margin-top:20px"><a class="btn" href="{{ url_for('pub.status') }}">{{ L('Holatni tekshirish','Проверить статус') }}</a> <a class="btn ghost" href="/">{{ L('Bosh sahifa','На главную') }}</a></p></div></div>{% endblock %}

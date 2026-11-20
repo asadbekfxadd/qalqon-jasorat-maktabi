@@ -1,0 +1,19 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+ <div class="avatar lg">{% if st.photo_id %}<img src="{{ url_for('auth.file', fid=st.photo_id) }}" alt="">{% else %}{{ st.full_name[:1] }}{% endif %}</div>
+ <div><h1 style="font-size:32px;margin:0">{{ st.full_name }}{% if st.is_demo %} <span class="pill demo">DEMO</span>{% endif %}</h1>
+ <div class="muted">{{ L('Sinf','Класс') }}: <b style="color:var(--ink)">{{ st.klass.name if st.klass else '—' }}</b>{% if st.klass and st.klass.teacher %} · {{ L('Sinf rahbari','Классный руководитель') }}: <b style="color:var(--ink)">{{ st.klass.teacher.full_name }}</b>{% endif %}</div></div></div>
+<div class="grid g4">
+<a class="card kpi" href="{{ url_for('cabinet.diary', c=st.id) }}" style="text-decoration:none"><span>{{ L('O‘rtacha ball','Средний балл') }}</span><b>{{ avg if avg is not none else '—' }}</b></a>
+<a class="card kpi" href="{{ url_for('cabinet.attendance', c=st.id) }}" style="text-decoration:none"><span>{{ L('Davomat','Посещаемость') }}</span><b>{{ att.rate ~ '%' if att.rate is not none else '—' }}</b></a>
+<div class="card kpi"><span>{{ L('Qoldirilgan kunlar','Пропущено дней') }}</span><b>{{ att.absent + att.excused }}</b></div>
+<div class="card kpi"><span>{{ L('Kechikishlar','Опозданий') }}</span><b>{{ att.late }}</b></div></div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>{{ L('So‘nggi baholar','Последние оценки') }}</h3><ul class="list">{% for g_ in last %}<li><span><span class="sc s{{ g_.score }}">{{ g_.score }}</span> &nbsp;{{ subj(g_.subject) }}{% if g_.comment %} <span class="muted small">— {{ g_.comment }}</span>{% endif %}</span><span class="muted small">{{ fmt(g_.day,true) }}</span></li>{% else %}<li class="muted">{{ L('Hozircha baholar yo‘q.','Оценок пока нет.') }}</li>{% endfor %}</ul></div>
+<div class="card"><h3>{{ L('Yaqin tadbirlar','Ближайшие события') }}</h3><ul class="list">
+{% for h in hw %}<li><a href="{{ url_for('cabinet.homework_one', hid=h.id, c=st.id) }}">📘 {{ subj(h.subject) }}: {{ h.title }}</a><span class="muted small nowrap">{{ L('muddat','до') }} {{ fmt(h.due,true) }}</span></li>{% endfor %}
+{% for a in anns %}<li><span>📣 {{ a.title }}</span><span class="muted small">{{ fmt(a.created,true) }}</span></li>{% endfor %}
+{% if not hw and not anns %}<li class="muted">—</li>{% endif %}</ul></div>
+<div class="card"><h3>{{ L('Bugungi darslar','Уроки сегодня') }}</h3><ul class="list">{% for l in lessons %}<li><span><b>{{ l.start }}</b> {{ subj(l.subject) }}</span><span class="muted small">{{ l.teacher.full_name if l.teacher }} {{ l.room }}</span></li>{% else %}<li class="muted">{{ L('Bugun darslar yo‘q.','Сегодня уроков нет.') }}</li>{% endfor %}</ul></div>
+<div class="card"><h3>{{ L('Izohlar va rag‘batlar','Замечания и поощрения') }}</h3><ul class="list">{% for m in remarks %}<li><span>{{ '👍' if m.kind=='praise' else '⚠' }} {{ m.text }}</span><span class="muted small">{{ fmt(m.day,true) }}</span></li>{% else %}<li class="muted">—</li>{% endfor %}</ul></div></div>{% endblock %}

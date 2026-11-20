@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block body %}
+{% set hi = site.hero_image %}
+<section class="hero {{ 'img' if hi }}" {% if hi %}style="background-image:url('{{ url_for('auth.file', fid=hi|int) }}')"{% endif %}>
+<div class="wrap">
+  <div>
+    <div class="eyebrow">Qalqon Jasorat Maktabi</div>
+    <h1>{% if lang=='ru' %}Дисциплина.<br>Воспитание.<br><span>Знания.</span>{% else %}Intizom.<br>Tarbiya.<br><span>Bilim.</span>{% endif %}</h1>
+    <p class="lead">{{ L('Kuchli xarakter — buyuk kelajak!','Сильный характер — великое будущее!') }}</p>
+    <div class="cta"><a class="btn lg" href="{{ url_for('pub.qabul') }}">{{ L('Qabulga yozilish','Записаться на приём') }}</a><a class="btn ghost lg" href="#about">{{ L('Maktab haqida','О школе') }}</a></div>
+  </div>
+  <div class="crest"><img src="{{ url_for('static', filename='logo.jpg') }}" alt="Qalqon"></div>
+</div></section>
+
+<section class="sec" id="about"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">{{ L('Maktab haqida','О школе') }}</div><h2>{{ L('Bilim va xarakter birga shakllanadi','Знания и характер формируются вместе') }}</h2>
+  <p>{{ L('Qalqon Jasorat Maktabi — umumiy ta’lim dasturini harbiy-vatanparvarlik tarbiyasi, jismoniy tayyorgarlik va qat’iy tartib bilan uyg‘unlashtirgan maktab. Missiyamiz — farzandingizni mas’uliyatli, jasur va bilimli shaxs sifatida voyaga yetkazish.','Qalqon Jasorat Maktabi — школа, где общеобразовательная программа сочетается с военно-патриотическим воспитанием, физической подготовкой и чётким распорядком. Наша миссия — вырастить ответственную, смелую и образованную личность.') }}</p></div>
+  <div class="grid g4">
+    <div class="feat"><i>01</i><h3>{{ L('Intizom','Дисциплина') }}</h3><p>{{ L('Aniq tartib, vaqtga hurmat va o‘z so‘zida turish.','Чёткий распорядок, уважение ко времени, верность слову.') }}</p></div>
+    <div class="feat"><i>02</i><h3>{{ L('Vatanparvarlik','Патриотизм') }}</h3><p>{{ L('Vatanga sadoqat, jamoa ruhi va o‘zaro hurmat.','Преданность Родине, командный дух и взаимное уважение.') }}</p></div>
+    <div class="feat"><i>03</i><h3>{{ L('Mas’uliyat','Ответственность') }}</h3><p>{{ L('Har bir o‘quvchi o‘z harakatlari uchun javob berishni o‘rganadi.','Каждый ученик учится отвечать за свои поступки.') }}</p></div>
+    <div class="feat"><i>04</i><h3>{{ L('Bilim','Знания') }}</h3><p>{{ L('Zamonaviy o‘quv dasturi va tajribali ustozlar.','Современная программа и опытные педагоги.') }}</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>{{ L('Ta’lim yo‘nalishlari','Направления обучения') }}</h3>
+      <ul class="list"><li>{{ L('Umumiy o‘rta ta’lim','Общее среднее образование') }}</li><li>{{ L('Jismoniy va sport tayyorgarligi','Физическая и спортивная подготовка') }}</li><li>{{ L('Saf va harbiy-vatanparvarlik tayyorgarligi','Строевая и военно-патриотическая подготовка') }}</li><li>{{ L('Chet tillari va raqamli ko‘nikmalar','Иностранные языки и цифровые навыки') }}</li></ul></div>
+    <div class="card"><h3>{{ L('Maktabning afzalliklari','Преимущества школы') }}</h3>
+      <ul class="list"><li>{{ L('Elektron kundalik va ota-onalar uchun shaxsiy kabinet','Электронный дневник и личный кабинет для родителей') }}</li><li>{{ L('Davomat va baholar haqida tezkor xabarlar','Мгновенные уведомления об оценках и посещаемости') }}</li><li>{{ L('Sinf rahbari va ustozlar bilan to‘g‘ridan-to‘g‘ri aloqa','Прямая связь с классным руководителем и учителями') }}</li><li>{{ L('Har bir o‘quvchining rivojlanish tarixi','История развития каждого ученика') }}</li></ul></div>
+  </div>
+</div></section>
+
+<section class="sec alt" id="process"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">{{ L('Ta’lim jarayoni','Образовательный процесс') }}</div><h2>{{ L('Kun tartibi — tizim va natija','Распорядок дня — система и результат') }}</h2></div>
+  <div class="grid g3 steps" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">
+    <div class="feat"><h3>{{ L('O‘quv mashg‘ulotlari','Учебные занятия') }}</h3><p>{{ L('Davlat standartlari bo‘yicha darslar, qo‘shimcha fan to‘garaklari.','Уроки по государственным стандартам, предметные кружки.') }}</p></div>
+    <div class="feat"><h3>{{ L('Jismoniy tayyorgarlik','Физическая подготовка') }}</h3><p>{{ L('Kundalik mashqlar, chidamlilik va sport musobaqalari.','Ежедневные тренировки, выносливость, спортивные соревнования.') }}</p></div>
+    <div class="feat"><h3>{{ L('Saf tayyorgarligi','Строевая подготовка') }}</h3><p>{{ L('Saf mashqlari, birdamlik va tashkilotchilik ko‘nikmalari.','Строевые занятия, слаженность и организованность.') }}</p></div>
+    <div class="feat"><h3>{{ L('Intizom va tarbiya','Дисциплина и воспитание') }}</h3><p>{{ L('Tarbiyachi-ustozlar, odob va hurmat madaniyati.','Наставники-воспитатели, культура поведения и уважения.') }}</p></div>
+    <div class="feat"><h3>{{ L('Darsdan tashqari tadbirlar','Внеучебные мероприятия') }}</h3><p>{{ L('Tanlovlar, ekskursiyalar, bayram va vatanparvarlik tadbirlari.','Конкурсы, экскурсии, праздники и патриотические события.') }}</p></div>
+  </div>
+</div></section>
+
+<section class="sec" id="staff"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">{{ L('Jamoa','Команда') }}</div><h2>{{ L('Ustozlar va rahbariyat','Преподаватели и руководство') }}</h2></div>
+  {% if staff %}<div class="grid g4">{% for s in staff %}<div class="person">
+    <div class="ph">{% if s.photo_id %}<img loading="lazy" src="{{ url_for('auth.file', fid=s.photo_id) }}" alt="{{ s.full_name }}">{% else %}{{ s.full_name[:1] }}{% endif %}</div>
+    <h3>{{ s.full_name }} {% if s.is_demo %}<span class="pill demo">DEMO</span>{% endif %}</h3><div class="pos">{{ pick(s,'position') }}</div>
+    {% if pick(s,'specialty') %}<div class="small muted">{{ pick(s,'specialty') }}</div>{% endif %}{% if pick(s,'bio') %}<p>{{ pick(s,'bio') }}</p>{% endif %}</div>{% endfor %}</div>
+  {% else %}<div class="empty">{{ L('Ustozlar haqida ma’lumot tez orada qo‘shiladi.','Информация о преподавателях скоро появится.') }}</div>{% endif %}
+</div></section>
+
+<section class="sec alt" id="news"><div class="wrap">
+  <div class="page-h"><div class="sec-h" style="margin:0"><div class="eyebrow">{{ L('Yangiliklar','Новости') }}</div><h2 style="margin:0">{{ L('Yangiliklar va tadbirlar','Новости и события') }}</h2></div><a class="btn ghost" href="{{ url_for('pub.news') }}">{{ L('Barchasi','Все новости') }} →</a></div>
+  {% if news %}<div class="grid g3">{% for n in news %}<a class="nc" href="{{ url_for('pub.news_one', nid=n.id) }}"><div class="im">{% if n.image_id %}<img loading="lazy" src="{{ url_for('auth.file', fid=n.image_id) }}" alt="">{% else %}Q{% endif %}</div>
+    <div class="tx"><span class="pill">{{ nm(NEWS_CATS, n.category) }}</span> <span class="muted small">{{ fmt(n.day) }}</span>{% if n.is_demo %} <span class="pill demo">DEMO</span>{% endif %}<h3>{{ pick(n,'title') }}</h3><p>{{ pick(n,'body')[:110] }}{{ '…' if pick(n,'body')|length>110 }}</p></div></a>{% endfor %}</div>
+  {% else %}<div class="empty">{{ L('Yangiliklar tez orada.','Новости появятся совсем скоро.') }}</div>{% endif %}
+</div></section>
+
+<section class="sec" id="gallery"><div class="wrap">
+  <div class="page-h"><div class="sec-h" style="margin:0"><div class="eyebrow">{{ L('Galereya','Галерея') }}</div><h2 style="margin:0">{{ L('Maktab hayoti','Жизнь школы') }}</h2></div><a class="btn ghost" href="{{ url_for('pub.gallery') }}">{{ L('Barcha foto va video','Все фото и видео') }} →</a></div>
+  {% if gallery %}{% set gitems = gallery %}{% include "pub/_gal.html" %}{% else %}<div class="empty">{{ L('Foto va videolar tez orada.','Фото и видео скоро появятся.') }}</div>{% endif %}
+</div></section>
+
+<section class="sec alt" id="contacts"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">{{ L('Aloqa','Контакты') }}</div><h2>{{ L('Biz bilan bog‘laning','Свяжитесь с нами') }}</h2></div>
+  <div class="grid g2">
+    <div class="card stack">
+      <div><div class="muted small">{{ L('Manzil','Адрес') }}</div>{{ site.address_ru if lang=='ru' and site.address_ru else site.address }}</div>
+      <div><div class="muted small">{{ L('Telefon','Телефон') }}</div><a href="tel:{{ site.phone|replace(' ','') }}">{{ site.phone }}</a></div>
+      <div><div class="muted small">Email</div><a href="mailto:{{ site.email }}">{{ site.email }}</a></div>
+      <div><div class="muted small">{{ L('Ish vaqti','Часы работы') }}</div>{{ site.hours_ru if lang=='ru' and site.hours_ru else site.hours }}</div>
+      <div class="row"><a class="btn" href="{{ site.instagram }}" target="_blank" rel="noopener">Instagram</a><a class="btn ghost" href="{{ site.telegram }}" target="_blank" rel="noopener">Telegram</a></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;min-height:280px">
+      {% set me_ = site.map_embed %}
+      {% if me_ and (me_.startswith('https://www.google.com/maps/embed') or me_.startswith('https://yandex.uz/map-widget') or me_.startswith('https://yandex.com/map-widget')) %}
+        <iframe src="{{ me_ }}" title="Map" style="border:0;width:100%;height:100%;min-height:300px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      {% else %}<div class="empty" style="border:0;height:100%;display:grid;place-items:center"><div>{{ L('Xarita','Карта') }}<br><a class="btn ghost sm" style="margin-top:10px" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query={{ site.address|urlencode }}">{{ L('Google Maps’da ochish','Открыть в Google Maps') }}</a></div></div>{% endif %}
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px;text-align:center;padding:36px"><h2 style="margin-bottom:.2em">{{ L('Farzandingizning kelajagi bugun boshlanadi','Будущее вашего ребёнка начинается сегодня') }}</h2>
+  <p class="muted">{{ L('Onlayn ariza qoldiring — biz siz bilan bog‘lanamiz.','Оставьте онлайн-заявку — мы свяжемся с вами.') }}</p><a class="btn lg" href="{{ url_for('pub.qabul') }}">{{ L('Qabulga yozilish','Записаться на приём') }}</a></div>
+</div></section>
+<footer class="foot"><div class="wrap"><span>© Qalqon Jasorat Maktabi</span><span><a href="{{ url_for('auth.login') }}">{{ L('Platformaga kirish','Вход в платформу') }}</a></span></div></footer>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="max-width:440px;padding-top:56px">
+<div class="card"><h2>{{ L('Parolni tiklash','Восстановление пароля') }}</h2>
+<p class="muted small">{{ L('Login yoki email kiriting. Havola emailga yuboriladi; email bo‘lmasa administrator vaqtinchalik parol beradi.','Введите логин или email. Ссылка придёт на email; если email не указан — администратор выдаст временный пароль.') }}</p>
+<form method="post" class="stack">{{ tok() }}<div><label>{{ L('Login yoki email','Логин или email') }}</label><input name="ident" required></div>
+<button class="btn">{{ L('Yuborish','Отправить') }}</button> <a class="btn ghost" href="{{ url_for('auth.login') }}">{{ L('Orqaga','Назад') }}</a></form></div></div>{% endblock %}

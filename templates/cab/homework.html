@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="page-h"><h1>{{ L('Uy vazifalari','Домашние задания') }}</h1></div>
+<div class="tw"><table><tr><th>{{ L('Fan','Предмет') }}</th><th>{{ L('Topshiriq','Задание') }}</th><th>{{ L('Berilgan','Выдано') }}</th><th>{{ L('Muddat','Срок') }}</th><th>{{ L('Holat','Статус') }}</th></tr>
+{% for h,status,sub in rows %}<tr><td>{{ subj(h.subject) }}</td><td><a href="{{ url_for('cabinet.homework_one', hid=h.id, c=st.id) }}">{{ h.title }}</a></td><td>{{ fmt(h.assigned) }}</td><td>{{ fmt(h.due) }}</td>
+<td><span class="pill {{ 'late bad' if status=='late' else status }}">{{ nm(HWS,status) }}</span>{% if sub and sub.score %} <span class="sc s{{ sub.score }}">{{ sub.score }}</span>{% endif %}</td></tr>{% else %}<tr><td colspan="5" class="muted">—</td></tr>{% endfor %}</table></div>{% endblock %}

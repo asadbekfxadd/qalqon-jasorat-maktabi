@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="pagehead"><h1>{{ L('Мои группы','Mening guruhlarim') }}</h1></div>
-<div class="grid g3">
-{% for gr in groups %}<a class="card" href="{{ url_for('t_group', gid=gr.id) }}" style="text-decoration:none;color:inherit"><h3>{{ gr.name }}</h3>
-<p class="muted" style="margin:0">{{ gr.branch.city if gr.branch }} · {{ gr.schedule }}<br>{{ gr.students|length }} {{ L('учеников','o‘quvchi') }}</p></a>
-{% else %}<p class="muted">{{ L('Вам пока не назначено групп. Обратитесь к администратору.','Sizga hozircha guruh biriktirilmagan. Administratorga murojaat qiling.') }}</p>{% endfor %}
-</div>
-{% endblock %}

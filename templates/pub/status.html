@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="max-width:520px;padding-top:56px;padding-bottom:70px">
+<div class="card stack"><h2>{{ L('Ariza holati','Статус заявки') }}</h2>
+<form method="post" class="stack">{{ tok() }}<div><label>{{ L('Ariza raqami','Номер заявки') }}</label><input name="number" placeholder="QJ-2026-00001" required value="{{ request.form.get('number','') }}"></div>
+<div><label>{{ L('Telefon (arizadagi)','Телефон (из заявки)') }}</label><input name="phone" type="tel" required></div><button class="btn">{{ L('Tekshirish','Проверить') }}</button></form>
+{% if a %}<hr style="border:0;border-top:1px solid var(--line);width:100%"><div><b>{{ a.number }}</b> — {{ a.child_name }}</div><div><span class="pill {{ a.status }}">{{ nm(STATUS, a.status) }}</span> <span class="muted small">{{ fmt(a.updated) }}</span></div>
+<div class="bar"><i style="width:{{ {'new':15,'review':35,'interview':55,'docs':75,'accepted':100,'rejected':100}[a.status] }}%"></i></div>{% endif %}</div></div>{% endblock %}

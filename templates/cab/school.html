@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="page-h"><h1>{{ L('Maktab e’lonlari','Объявления школы') }}</h1>{% if me.role=='parent' %}<a class="btn" href="{{ url_for('auth.messages') }}">✉ {{ L('Ustozga yozish','Написать учителю') }}</a>{% endif %}</div>
+{% for a in anns %}<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><b>{{ a.title }}{% if a.is_demo %} <span class="pill demo">DEMO</span>{% endif %}</b><span class="muted small">{{ fmtdt(a.created) }} · {{ a.klass.name if a.klass else L('Butun maktab','Вся школа') }}</span></div><p style="white-space:pre-wrap;margin:.4em 0 0">{{ a.text }}</p></div>
+{% else %}<div class="empty">—</div>{% endfor %}{% endblock %}

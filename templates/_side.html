@@ -1,0 +1,49 @@
+{% macro a(ep, label, kw={}, match=None) %}<a href="{{ url_for(ep, **kw) }}" class="{{ 'on' if request.endpoint==ep or (match and request.endpoint.startswith(match)) }}">{{ label }}</a>{% endmacro %}
+{% if me.role=='admin' %}
+  {{ a('admin.home', L('Boshqaruv paneli','Дашборд')) }}
+  <h5>{{ L('Qabul','Приём') }}</h5>{{ a('admin.applications', L('Arizalar','Заявки'), match='admin.application') }}
+  <h5>{{ L('Maktab','Школа') }}</h5>
+  {{ a('admin.students', L('O‘quvchilar','Ученики'), match='admin.student') }}
+  {{ a('admin.users', L('Hisoblar va rollar','Аккаунты и роли')) }}
+  {{ a('admin.classes', L('Sinflar','Классы')) }}
+  {{ a('admin.subjects', L('Fanlar','Предметы')) }}
+  {{ a('admin.schedule', L('Dars jadvali','Расписание')) }}
+  <h5>{{ L('Nazorat','Контроль') }}</h5>
+  {{ a('admin.attendance', L('Davomat','Посещаемость')) }}
+  {{ a('admin.grades', L('Baholar','Оценки')) }}
+  {{ a('admin.homework', L('Uy vazifalari','Домашние задания')) }}
+  {{ a('admin.announcements', L('E’lonlar','Объявления')) }}
+  {{ a('admin.reports', L('Hisobotlar','Отчёты')) }}
+  <h5>{{ L('Tizim','Система') }}</h5>
+  {{ a('admin.content', L('Sayt kontenti','Контент сайта')) }}
+  {{ a('admin.audit_log', L('Harakatlar jurnali','Журнал действий')) }}
+  {{ a('admin.demo', L('Demo ma’lumotlar','Демо-данные')) }}
+  {{ a('auth.messages', L('Xabarlar','Сообщения')) }}
+{% elif me.role=='teacher' %}
+  {{ a('teacher.home', L('Bosh sahifa','Главная')) }}
+  {{ a('teacher.journal', L('Elektron jurnal','Электронный журнал')) }}
+  {{ a('teacher.homework', L('Uy vazifalari','Домашние задания'), match='teacher.homework') }}
+  {{ a('teacher.materials', L('Materiallar','Материалы')) }}
+  {{ a('teacher.stats', L('O‘zlashtirish','Успеваемость')) }}
+  {{ a('teacher.reports', L('Hisobotlar','Отчёты')) }}
+  {{ a('teacher.schedule', L('Dars jadvali','Расписание')) }}
+  <h5>{{ L('Aloqa','Связь') }}</h5>
+  {{ a('auth.messages', L('Xabarlar','Сообщения')) }}
+  {{ a('teacher.announce', L('Sinf e’lonlari','Объявления классу')) }}
+{% else %}
+  {{ a('cabinet.home', L('Bosh sahifa','Главная')) }}
+  {{ a('cabinet.diary', L('Elektron kundalik','Электронный дневник')) }}
+  {{ a('cabinet.attendance', L('Davomat','Посещаемость')) }}
+  {{ a('cabinet.homework', L('Uy vazifalari','Домашние задания'), match='cabinet.homework') }}
+  {{ a('cabinet.schedule', L('Dars jadvali','Расписание')) }}
+  {{ a('cabinet.achievements', L('Yutuqlar','Достижения')) }}
+  {% if me.role=='student' %}{{ a('cabinet.materials', L('O‘quv materiallari','Учебные материалы')) }}{% endif %}
+  {{ a('cabinet.progress', L('Shaxsiy progress','Личный прогресс')) }}
+  {{ a('cabinet.report', L('Hisobot','Отчёт')) }}
+  <h5>{{ L('Maktab bilan aloqa','Связь со школой') }}</h5>
+  {{ a('cabinet.school', L('E’lonlar','Объявления')) }}
+  {% if me.role=='parent' %}{{ a('auth.messages', L('Xabarlar','Сообщения')) }}{% endif %}
+{% endif %}
+<h5>{{ L('Profil','Профиль') }}</h5>
+{{ a('auth.notifications', L('Bildirishnomalar','Уведомления')) }}
+{{ a('auth.account', L('Sozlamalar','Настройки')) }}

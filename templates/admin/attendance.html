@@ -1,0 +1,4 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Davomat nazorati','Контроль посещаемости') }}</h1></div>
+<form class="card row" style="margin-bottom:16px"><div><label>{{ L('Sinf','Класс') }}</label><select name="class">{% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if kl and kl.id==c.id }}>{{ c.name }}</option>{% endfor %}</select></div><div><label>{{ L('Sana','Дата') }}</label><input type="date" name="day" value="{{ day }}"></div><div class="fit"><button class="btn">{{ L('Ko‘rsatish','Показать') }}</button></div></form>
+{% if kl %}{% include "partials/att_form.html" %}{% endif %}{% endblock %}

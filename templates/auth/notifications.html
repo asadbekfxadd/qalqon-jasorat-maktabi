@@ -1,0 +1,8 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Bildirishnomalar','Уведомления') }}</h1>
+<form method="post" action="{{ url_for('auth.notif_all') }}">{{ tok() }}<button class="btn ghost sm">{{ L('Hammasini o‘qilgan deb belgilash','Отметить все прочитанными') }}</button></form></div>
+{% if items %}<div class="card"><ul class="list">{% for n in items %}
+<li><a href="{{ url_for('auth.notif_go', nid=n.id) }}" style="color:inherit;text-decoration:none;flex:1">{% if not n.read %}<b style="color:var(--gold2)">● </b>{% endif %}{{ n.text_ru if lang=='ru' and n.text_ru else n.text_uz }}{% if n.is_demo %} <span class="pill demo">DEMO</span>{% endif %}</a><span class="muted small nowrap">{{ fmtdt(n.created) }}</span></li>{% endfor %}</ul></div>
+{% else %}<div class="empty">{{ L('Hozircha bildirishnoma yo‘q.','Уведомлений пока нет.') }}</div>{% endif %}
+<p class="muted small">{{ L('Email, Telegram va Push kanallari sozlamalar orqali ulanadi.','Каналы Email, Telegram и Push подключаются в настройках профиля и окружения сервера.') }}</p>
+{% endblock %}

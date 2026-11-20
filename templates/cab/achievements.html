@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="page-h"><h1>{{ L('Yutuqlar','Достижения') }}</h1></div>
+{% if items %}<div class="grid g2">{% for a in items %}<div class="card"><span class="pill">{{ nm(ACH,a.category) }}</span> <span class="muted small">{{ fmt(a.day) }}</span><h3 style="margin-top:.5em">🏅 {{ a.title }}</h3></div>{% endfor %}</div>
+{% else %}<div class="empty">{{ L('Yutuqlar hali qo‘shilmagan.','Достижений пока нет.') }}</div>{% endif %}{% endblock %}

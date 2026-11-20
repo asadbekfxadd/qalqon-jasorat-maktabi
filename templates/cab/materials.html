@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('O‘quv materiallari','Учебные материалы') }}</h1></div>
+{% for m in items %}<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between"><b>{{ m.title }}</b><span class="muted small">{{ subj(m.subject) }} · {{ fmt(m.created) }}</span></div><p style="white-space:pre-wrap">{{ m.text }}</p>
+{% if m.link %}<div><a href="{{ m.link }}" target="_blank" rel="noopener">🔗 {{ m.link }}</a></div>{% endif %}{% for f in m.files %}<div><a href="{{ url_for('auth.file', fid=f.id) }}" target="_blank">📎 {{ f.name }}</a></div>{% endfor %}</div>
+{% else %}<div class="empty">{{ L('Materiallar yo‘q.','Материалов пока нет.') }}</div>{% endfor %}{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="max-width:780px;padding-top:40px;padding-bottom:60px">
+<a href="{{ url_for('pub.news') }}">← {{ L('Yangiliklar','Новости') }}</a>
+<h1 style="margin-top:.4em">{{ pick(n,'title') }}</h1><p class="muted"><span class="pill">{{ nm(NEWS_CATS, n.category) }}</span> {{ fmt(n.day) }}</p>
+{% if n.image_id %}<img src="{{ url_for('auth.file', fid=n.image_id) }}" alt="" style="border-radius:12px;width:100%;margin-bottom:18px">{% endif %}
+{% set v = video_info(n.video_url) if n.video_url else none %}{% if v and v.kind=='iframe' %}<iframe class="vframe" src="{{ v.src|replace('autoplay=1','autoplay=0') }}" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>{% elif v %}<video class="vframe" src="{{ v.src }}" controls preload="metadata"></video>{% endif %}
+<p style="white-space:pre-wrap;font-size:17px">{{ pick(n,'body') }}</p></div>{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="shell">
+  <aside class="side no-print">{% include "_side.html" %}</aside>
+  <main>{% block main %}{% endblock %}</main>
+</div>
+{% endblock %}

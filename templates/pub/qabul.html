@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}Qabul — Qalqon{% endblock %}
+{% block body %}<div class="wrap cform" style="padding-top:40px;padding-bottom:70px">
+<div class="eyebrow">Qabul</div><h1>{{ L('Qabulga yozilish','Электронная запись на приём') }}</h1>
+<p class="muted">{{ L('Ariza raqami beriladi. Arizangiz holatini shu raqam bilan kuzatishingiz mumkin.','Вам будет присвоен номер заявки. По нему можно отслеживать статус.') }} <a href="{{ url_for('pub.status') }}">{{ L('Ariza holatini tekshirish','Проверить статус заявки') }}</a></p>
+<form method="post" enctype="multipart/form-data" class="card stack" autocomplete="on">{{ tok() }}
+<input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+<h3>{{ L('Bola haqida','О ребёнке') }}</h3>
+<div class="row"><div style="flex:2 1 260px"><label>{{ L('Bolaning F.I.Sh. *','ФИО ребёнка *') }}</label><input name="child_name" required value="{{ f.get('child_name','') }}"></div>
+<div><label>{{ L('Tug‘ilgan sana *','Дата рождения *') }}</label><input type="date" name="birth_date" required value="{{ f.get('birth_date','') }}"></div></div>
+<div class="row"><div><label>{{ L('Qaysi sinfga *','В какой класс *') }}</label><select name="grade" required><option value="">—</option>{% for i in range(1,12) %}<option {{ 'selected' if f.get('grade')==i|string }}>{{ i }}</option>{% endfor %}</select></div>
+<div style="flex:2 1 260px"><label>{{ L('Oldingi maktab','Предыдущая школа') }}</label><input name="prev_school" value="{{ f.get('prev_school','') }}"></div></div>
+<h3 style="margin-top:10px">{{ L('Ota-ona haqida','О родителе') }}</h3>
+<div class="row"><div style="flex:2 1 260px"><label>{{ L('Ota-onaning F.I.Sh. *','ФИО родителя *') }}</label><input name="parent_name" required value="{{ f.get('parent_name','') }}"></div>
+<div><label>{{ L('Telefon *','Телефон *') }}</label><input name="phone" type="tel" required placeholder="+998 90 123 45 67" value="{{ f.get('phone','') }}"></div></div>
+<div class="row"><div><label>Email ({{ L('ixtiyoriy','необязательно') }})</label><input name="email" type="email" value="{{ f.get('email','') }}"></div>
+<div style="flex:2 1 260px"><label>{{ L('Yashash manzili *','Адрес проживания *') }}</label><input name="address" required value="{{ f.get('address','') }}"></div></div>
+<div><label>{{ L('Qo‘shimcha ma’lumot','Дополнительная информация') }}</label><textarea name="extra">{{ f.get('extra','') }}</textarea></div>
+<div><label>{{ L('Hujjatlar (PDF, JPG, PNG, DOCX — har biri 5 MB gacha, 5 tagacha)','Документы (PDF, JPG, PNG, DOCX — до 5 МБ каждый, до 5 файлов)') }}</label><input type="file" name="docs" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"></div>
+<p class="muted small">{{ L('Hujjatlar xavfsiz saqlanadi va faqat ma’muriyatga ko‘rinadi.','Документы хранятся защищённо и доступны только администрации.') }}</p>
+<button class="btn lg">{{ L('Ariza yuborish','Отправить заявку') }}</button></form></div>{% endblock %}

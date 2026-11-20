@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="max-width:440px;padding-top:56px">
+<div class="card"><h2>{{ L('Yangi parol','Новый пароль') }}</h2><p class="muted small">{{ L('Kamida 8 belgi, harf va raqam.','Минимум 8 символов, буквы и цифры.') }}</p>
+<form method="post" class="stack">{{ tok() }}<div><label>{{ L('Yangi parol','Новый пароль') }}</label><input name="new" type="password" autocomplete="new-password" required></div>
+<div><label>{{ L('Takrorlang','Повторите') }}</label><input name="new2" type="password" autocomplete="new-password" required></div><button class="btn">{{ L('Saqlash','Сохранить') }}</button></form></div></div>{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><div><a href="{{ url_for('admin.students') }}">← {{ L('O‘quvchilar','Ученики') }}</a><h1>{{ st.full_name if st else L('Yangi o‘quvchi','Новый ученик') }} {% if st and st.is_demo %}<span class="pill demo">DEMO</span>{% endif %}</h1></div></div>
+<form class="card stack" method="post" enctype="multipart/form-data">{{ tok() }}<input type="hidden" name="act" value="save">{% if app %}<input type="hidden" name="app_id" value="{{ app.id }}">{% endif %}
+<div class="row"><div style="flex:2 1 260px"><label>{{ L('F.I.Sh. *','ФИО *') }}</label><input name="full_name" required value="{{ st.full_name if st else (app.child_name if app else '') }}"></div>
+<div><label>{{ L('Tug‘ilgan sana','Дата рождения') }}</label><input type="date" name="birth_date" value="{{ (st.birth_date if st else (app.birth_date if app else none)) or '' }}"></div>
+<div><label>{{ L('Sinf','Класс') }}</label><select name="class_id"><option value="">—</option>{% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if st and st.class_id==c.id }}>{{ c.name }}</option>{% endfor %}</select></div></div>
+<div class="row"><div><label>{{ L('Holat','Статус') }}</label><select name="active"><option value="1">{{ L('Faol','Активен') }}</option><option value="0" {{ 'selected' if st and not st.active }}>{{ L('Nofaol','Неактивен') }}</option></select></div>
+<div><label>{{ L('Ariza raqami','Номер заявки') }}</label><input name="application_no" value="{{ st.application_no if st else (app.number if app else '') }}"></div>
+<div><label>{{ L('Rasm','Фото') }}</label><input type="file" name="photo" accept="image/*"></div></div>
+<h3>{{ L('Ota-onalar','Родители') }}</h3>
+<div><label>{{ L('Mavjud ota-ona hisoblari (Ctrl bilan bir nechta)','Существующие родители (Ctrl — несколько)') }}</label><select name="parents" multiple size="5">{% for p in parents %}<option value="{{ p.id }}" {{ 'selected' if st and p in st.parents }}>{{ p.full_name }} ({{ p.username }}){{ ' · DEMO' if p.is_demo }}</option>{% endfor %}</select></div>
+<div class="row"><div style="flex:2 1 240px"><label>{{ L('Yoki yangi ota-ona hisobi: F.I.Sh.','Или создать родителя: ФИО') }}</label><input name="new_parent_name" value="{{ app.parent_name if app and not st else '' }}"></div>
+<div><label>{{ L('Telefon','Телефон') }}</label><input name="new_parent_phone" value="{{ app.phone if app and not st else '' }}"></div><div><label>Email</label><input name="new_parent_email" value="{{ app.email if app and not st else '' }}"></div></div>
+{% if not (st and st.account) %}<label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" name="make_login" value="1"> {{ L('O‘quvchi uchun kabinet yaratish','Создать кабинет для ученика') }}</label>{% else %}<div class="muted small">{{ L('O‘quvchi logini','Логин ученика') }}: <b>{{ st.account.username }}</b></div>{% endif %}
+<div class="row"><div class="fit"><button class="btn">{{ L('Saqlash','Сохранить') }}</button></div></div></form>
+{% if st %}
+<div class="grid g2" style="margin-top:16px">
+<form class="card stack" method="post">{{ tok() }}<input type="hidden" name="act" value="ach"><h3>{{ L('Yutuq qo‘shish','Добавить достижение') }}</h3><div class="row"><div><select name="category">{% for k in ACH %}<option value="{{ k }}">{{ nm(ACH,k) }}</option>{% endfor %}</select></div><div><input type="date" name="day" value="{{ today() }}"></div></div><input name="title" placeholder="{{ L('Nomi','Название') }}" required><button class="btn sm">{{ L('Qo‘shish','Добавить') }}</button>
+<ul class="list">{% for a in ach %}<li><span>🏅 {{ a.title }}</span><span class="muted small">{{ fmt(a.day) }}</span></li>{% endfor %}</ul></form>
+<form class="card stack" method="post">{{ tok() }}<input type="hidden" name="act" value="remark"><h3>{{ L('Izoh / rag‘bat','Замечание / поощрение') }}</h3><div class="row"><div><select name="kind"><option value="praise">{{ L('Rag‘bat','Поощрение') }}</option><option value="remark">{{ L('Izoh','Замечание') }}</option></select></div><div><input type="date" name="day" value="{{ today() }}"></div></div><input name="text" required><button class="btn sm">{{ L('Saqlash','Сохранить') }}</button>
+<ul class="list">{% for m in remarks %}<li><span>{{ '👍' if m.kind=='praise' else '⚠' }} {{ m.text }}</span><span class="muted small">{{ fmt(m.day) }}</span></li>{% endfor %}</ul></form></div>
+<h3 style="margin-top:22px">{{ L('Hisobot','Отчёт') }}</h3><div class="tabs">{% for k in PERIODS %}<a href="?p={{ k }}" class="{{ 'on' if rep.kind==k }}">{{ nm(PERIODS,k) }}</a>{% endfor %}<a href="#" onclick="window.print();return false">🖨</a></div>
+{% set r = rep %}{% include "partials/student_report.html" %}
+<form method="post" data-confirm="{{ L('O‘quvchi va uning barcha ma’lumotlari o‘chiriladi. Davom etasizmi?','Ученик и все его данные будут удалены. Продолжить?') }}" style="margin-top:16px">{{ tok() }}<input type="hidden" name="act" value="delete"><button class="btn danger sm">{{ L('O‘quvchini o‘chirish','Удалить ученика') }}</button></form>
+{% endif %}{% endblock %}

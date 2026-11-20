@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="page-h"><h1>{{ L('Dars jadvali','Расписание') }}</h1></div>
+{% if by %}<div class="grid g3">{% for wd in range(6) if by.get(wd) %}<div class="card"><h3>{{ WEEKDAYS[wd][1 if lang=='ru' else 0] }}</h3><ul class="list">{% for l in by[wd] %}<li><span><b>{{ l.start }}–{{ l.end }}</b><br>{{ subj(l.subject) }}</span><span class="muted small right">{{ l.teacher.full_name if l.teacher }}<br>{{ L('xona','каб.') }} {{ l.room }}</span></li>{% endfor %}</ul></div>{% endfor %}</div>
+{% else %}<div class="empty">{{ L('Jadval hali kiritilmagan.','Расписание пока не заполнено.') }}</div>{% endif %}{% endblock %}

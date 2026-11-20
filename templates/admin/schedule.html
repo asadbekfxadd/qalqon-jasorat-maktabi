@@ -1,0 +1,13 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Dars jadvali','Расписание') }}</h1></div>
+<div class="tabs">{% for c in classes %}<a href="?class={{ c.id }}" class="{{ 'on' if cid==c.id }}">{{ c.name }}</a>{% else %}<span class="muted">{{ L('Avval sinf yarating.','Сначала создайте класс.') }}</span>{% endfor %}</div>
+{% if cid %}<form class="card row" method="post" style="margin-bottom:16px">{{ tok() }}<input type="hidden" name="act" value="add"><input type="hidden" name="class" value="{{ cid }}">
+<div><label>{{ L('Kun','День') }}</label><select name="weekday">{% for w in WEEKDAYS %}<option value="{{ loop.index0 }}">{{ w[1] if lang=='ru' else w[0] }}</option>{% endfor %}</select></div>
+<div style="flex:0 1 80px"><label>№</label><input name="number" type="number" min="1" max="10" value="1"></div>
+<div style="flex:0 1 110px"><label>{{ L('Boshlanish','Начало') }}</label><input name="start" type="time" value="08:30"></div><div style="flex:0 1 110px"><label>{{ L('Tugash','Конец') }}</label><input name="end" type="time" value="09:15"></div>
+<div><label>{{ L('Fan','Предмет') }}</label><select name="subject_id" required>{% for s in subjects %}<option value="{{ s.id }}">{{ subj(s) }}</option>{% endfor %}</select></div>
+<div><label>{{ L('O‘qituvchi','Учитель') }}</label><select name="teacher_id"><option value="">—</option>{% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }}</option>{% endfor %}</select></div>
+<div style="flex:0 1 90px"><label>{{ L('Xona','Каб.') }}</label><input name="room"></div><div class="fit"><button class="btn">+</button></div></form>
+<div class="tw"><table><tr><th>{{ L('Kun','День') }}</th><th>№</th><th>{{ L('Vaqt','Время') }}</th><th>{{ L('Fan','Предмет') }}</th><th>{{ L('O‘qituvchi','Учитель') }}</th><th>{{ L('Xona','Каб.') }}</th><th></th></tr>
+{% for l in lessons %}<tr><td>{{ WEEKDAYS[l.weekday][1 if lang=='ru' else 0] }}</td><td>{{ l.number }}</td><td>{{ l.start }}–{{ l.end }}</td><td>{{ subj(l.subject) }}</td><td>{{ l.teacher.full_name if l.teacher else '—' }}</td><td>{{ l.room }}</td>
+<td><form method="post">{{ tok() }}<input type="hidden" name="act" value="del"><input type="hidden" name="id" value="{{ l.id }}"><input type="hidden" name="class" value="{{ cid }}"><button class="btn danger sm">✕</button></form></td></tr>{% else %}<tr><td colspan="7" class="muted">{{ L('Jadval bo‘sh.','Расписание пусто.') }}</td></tr>{% endfor %}</table></div>{% endif %}{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Hisobotlar','Отчёты') }}</h1>{% if rep %}<button class="btn ghost no-print" onclick="window.print()">🖨</button>{% endif %}</div>
+<form class="card row no-print" style="margin-bottom:16px"><div><label>{{ L('Davr','Период') }}</label><select name="p">{% for k in PERIODS %}<option value="{{ k }}" {{ 'selected' if kind==k }}>{{ nm(PERIODS,k) }}</option>{% endfor %}</select></div>
+<div><label>{{ L('Sinf','Класс') }}</label><select name="class">{% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if cid==c.id }}>{{ c.name }}</option>{% endfor %}</select></div><div class="fit"><button class="btn">{{ L('Shakllantirish','Сформировать') }}</button></div>{% if rep %}<div class="fit"><button name="xlsx" value="1" class="btn ghost">⬇ Excel</button></div>{% endif %}</form>
+{% if rep %}{% include "partials/class_report.html" %}<p class="muted small">{{ L('Faqat sizga biriktirilgan fanlar ko‘rsatilgan.','Показаны только ваши предметы.') }}</p>{% else %}<div class="empty">{{ L('Sinfni tanlang.','Выберите класс.') }}</div>{% endif %}{% endblock %}

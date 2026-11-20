@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Demo ma’lumotlar','Демо-данные') }}</h1></div>
+<div class="card stack"><p>{{ L('Demo yozuvlar «DEMO» belgisi bilan ajratilgan va haqiqiy yozuvlar bilan aralashmaydi. Bir tugma bilan to‘liq o‘chiriladi.','Демо-записи помечены «DEMO», не смешиваются с реальными и удаляются одной кнопкой.') }}</p>
+<div class="grid g4">{% for k,v in counts.items() %}<div class="card flat kpi"><b>{{ v }}</b><span>{{ k }}</span></div>{% endfor %}</div>
+<p class="muted small">{{ L('Demo hisoblar','Демо-аккаунты') }}: <b>demo_teacher, demo_teacher2, demo_teacher3, demo_parent, demo_parent2, demo_student</b> · {{ L('parol','пароль') }}: <b>{{ pw }}</b></p>
+<div class="row"><form method="post" class="fit">{{ tok() }}<input type="hidden" name="act" value="load"><button class="btn">{{ L('Demo yuklash','Загрузить демо') }}</button></form>
+<form method="post" class="fit" data-confirm="{{ L('Barcha demo ma’lumotlar o‘chirilsinmi?','Удалить все демо-данные?') }}">{{ tok() }}<input type="hidden" name="act" value="purge"><button class="btn danger">{{ L('Demo o‘chirish','Удалить демо') }}</button></form></div></div>{% endblock %}

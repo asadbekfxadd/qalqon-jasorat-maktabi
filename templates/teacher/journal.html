@@ -1,0 +1,14 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Elektron jurnal','Электронный журнал') }}</h1></div>
+{% if not pairs %}<div class="empty">{{ L('Sizga sinf/fan biriktirilmagan.','Вам не назначены классы/предметы.') }}</div>{% else %}
+<div class="tabs">{% for k,s in pairs %}<a href="{{ url_for('teacher.journal', **{'class': k.id, 'subject': s.id, 'day': day}) }}" class="{{ 'on' if k.id==kl.id and s.id==sub.id }}">{{ k.name }} · {{ subj(s) }}</a>{% endfor %}</div>
+<form class="card row" style="margin-bottom:16px"><input type="hidden" name="class" value="{{ kl.id }}"><input type="hidden" name="subject" value="{{ sub.id }}"><div><label>{{ L('Sana','Дата') }}</label><input type="date" name="day" value="{{ day }}"></div><div class="fit"><button class="btn ghost">{{ L('Ko‘rsatish','Показать') }}</button></div></form>
+<form method="post">{{ tok() }}<input type="hidden" name="class" value="{{ kl.id }}"><input type="hidden" name="subject" value="{{ sub.id }}"><input type="hidden" name="day" value="{{ day }}">
+<div class="tw"><table><tr><th>{{ L('O‘quvchi','Ученик') }}</th><th>{{ L('Davomat','Посещаемость') }}</th><th>{{ L('Yangi baho','Новая оценка') }}</th><th>{{ L('Izoh','Комментарий') }}</th><th>{{ L('So‘nggi baholar','Последние оценки') }}</th><th>{{ L('O‘rt.','Ср.') }}</th></tr>
+{% for s in kl.students %}{% set a = att.get(s.id) %}<tr><td><a href="{{ url_for('teacher.student', sid=s.id) }}">{{ s.full_name }}</a></td>
+<td style="min-width:170px"><select name="att_{{ s.id }}"><option value="">—</option>{% for k in ATT %}<option value="{{ k }}" {{ 'selected' if a and a.status==k }}>{{ nm(ATT,k) }}</option>{% endfor %}</select><input name="reason_{{ s.id }}" value="{{ a.reason if a else '' }}" placeholder="{{ L('Sabab','Причина') }}" style="margin-top:4px"></td>
+<td style="width:90px"><select name="score_{{ s.id }}"><option value="">—</option>{% for i in [5,4,3,2,1] %}<option>{{ i }}</option>{% endfor %}</select></td>
+<td style="min-width:180px"><input name="comment_{{ s.id }}" maxlength="300"></td>
+<td>{% for g_ in last[s.id]|reverse %}<span class="sc s{{ g_.score }}" title="{{ fmt(g_.day) }} {{ g_.comment }}">{{ g_.score }}</span> {% endfor %}</td><td><b>{{ avgs[s.id] if avgs[s.id] is not none else '—' }}</b></td></tr>
+{% else %}<tr><td colspan="6" class="muted">{{ L('Sinfda o‘quvchilar yo‘q.','В классе нет учеников.') }}</td></tr>{% endfor %}</table></div>
+<div class="row" style="margin-top:14px"><div style="flex:0 1 200px"><label>{{ L('Baho turi','Тип оценки') }}</label><select name="kind"><option value="lesson">{{ L('Dars','Урок') }}</option><option value="test">{{ L('Nazorat ishi','Контрольная') }}</option><option value="quarter">{{ L('Chorak','Четверть') }}</option></select></div><div class="fit"><button class="btn">{{ L('Jurnalni saqlash','Сохранить журнал') }}</button></div></div></form>{% endif %}{% endblock %}

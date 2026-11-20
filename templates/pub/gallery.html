@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block body %}<div class="wrap" style="padding-top:40px;padding-bottom:60px">
+<h1>{{ L('Galereya','Галерея') }}</h1>
+<div class="tabs"><a href="?" class="{{ 'on' if not cat }}">{{ L('Hammasi','Все') }}</a>{% for k in CATS %}<a href="?cat={{ k }}" class="{{ 'on' if cat==k }}">{{ nm(CATS,k) }}</a>{% endfor %}</div>
+{% if items %}{% set gitems = items %}{% include "pub/_gal.html" %}{% else %}<div class="empty">{{ L('Bu bo‘limda hali material yo‘q.','В этом разделе пока нет материалов.') }}</div>{% endif %}</div>{% endblock %}

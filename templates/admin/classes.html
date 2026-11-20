@@ -1,0 +1,14 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Sinflar','Классы') }}</h1></div>
+<form class="card row" method="post" style="margin-bottom:16px">{{ tok() }}<input type="hidden" name="act" value="create"><div><label>{{ L('Sinf nomi','Название класса') }}</label><input name="name" placeholder="5-A" required></div>
+<div><label>{{ L('Sinf rahbari','Классный руководитель') }}</label><select name="teacher_id"><option value="">—</option>{% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }}</option>{% endfor %}</select></div><div class="fit"><button class="btn">{{ L('Qo‘shish','Добавить') }}</button></div></form>
+{% for c in items %}<div class="card" style="margin-bottom:14px"><form method="post" class="row">{{ tok() }}<input type="hidden" name="id" value="{{ c.id }}">
+<div style="flex:0 1 110px"><label>{{ L('Nomi','Название') }}</label><input name="name" value="{{ c.name }}"></div>
+<div><label>{{ L('Sinf rahbari','Классный руководитель') }}</label><select name="teacher_id"><option value="">—</option>{% for t in teachers %}<option value="{{ t.id }}" {{ 'selected' if c.teacher_id==t.id }}>{{ t.full_name }}</option>{% endfor %}</select></div>
+<div class="fit muted small">{{ c.students|length }} {{ L('o‘quvchi','учеников') }}{% if c.is_demo %} <span class="pill demo">DEMO</span>{% endif %}</div>
+<div class="fit"><button name="act" value="save" class="btn sm">{{ L('Saqlash','Сохранить') }}</button> <button name="act" value="delete" class="btn danger sm" onclick="return confirm('?')">✕</button></div></form>
+<h4 style="margin-top:14px">{{ L('O‘qituvchi ↔ fan','Учитель ↔ предмет') }}</h4>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">{% for a in assigns if a.class_id==c.id %}<form method="post" style="display:inline">{{ tok() }}<input type="hidden" name="act" value="unassign"><input type="hidden" name="id" value="{{ a.id }}"><span class="pill">{{ subj(a.subject) }} — {{ a.teacher.full_name }} <button style="background:none;border:0;color:var(--bad);cursor:pointer">✕</button></span></form>{% else %}<span class="muted small">{{ L('Biriktirish yo‘q','Назначений нет') }}</span>{% endfor %}</div>
+<form method="post" class="row">{{ tok() }}<input type="hidden" name="act" value="assign"><input type="hidden" name="class_id" value="{{ c.id }}">
+<div><select name="teacher_id" required>{% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }}</option>{% endfor %}</select></div><div><select name="subject_id" required>{% for s in subjects %}<option value="{{ s.id }}">{{ subj(s) }}</option>{% endfor %}</select></div><div class="fit"><button class="btn ghost sm">+ {{ L('Biriktirish','Назначить') }}</button></div></form></div>
+{% else %}<div class="empty">{{ L('Sinflar yo‘q.','Классов пока нет.') }}</div>{% endfor %}{% endblock %}

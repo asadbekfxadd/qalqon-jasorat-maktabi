@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Sinf e’lonlari','Объявления классу') }}</h1></div>
+{% if classes %}<form class="card stack" method="post" style="margin-bottom:16px">{{ tok() }}<div class="row"><div><label>{{ L('Sinf','Класс') }}</label><select name="class_id">{% for c in classes %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></div><div style="flex:3 1 260px"><label>{{ L('Sarlavha','Заголовок') }}</label><input name="title" required></div></div>
+<div><label>{{ L('Matn','Текст') }}</label><textarea name="text"></textarea></div><div><button class="btn">{{ L('Yuborish','Отправить') }}</button></div></form>{% endif %}
+{% for a in items %}<div class="card" style="margin-bottom:10px"><b>{{ a.title }}</b> <span class="muted small">{{ a.klass.name if a.klass }} · {{ fmtdt(a.created) }}</span><p style="white-space:pre-wrap;margin:.4em 0 0">{{ a.text }}</p></div>{% endfor %}{% endblock %}

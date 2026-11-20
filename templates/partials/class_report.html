@@ -1,0 +1,4 @@
+<div class="card" style="margin-bottom:12px"><b>{{ L('Sinf','Класс') }} {{ rep.klass.name }}</b> · {{ nm(PERIODS, rep.kind) }}: {{ fmt(rep.start) }} – {{ fmt(rep.end) }}</div>
+<div class="tw"><table><tr><th>{{ L('O‘quvchi','Ученик') }}</th>{% for s in rep.subjects %}<th>{{ subj(s) }}</th>{% endfor %}<th>{{ L('O‘rtacha','Средний') }}</th><th>{{ L('Davomat','Посещ.') }}</th></tr>
+{% for r in rep.rows %}<tr><td>{{ r.st.full_name }}</td>{% for s in rep.subjects %}{% set v = r.per[s.id] %}<td>{% if v is not none %}<span class="sc s{{ v|round|int }}">{{ v }}</span>{% else %}<span class="muted">—</span>{% endif %}</td>{% endfor %}
+<td><b>{{ r.avg if r.avg is not none else '—' }}</b></td><td>{{ r.att.rate ~ '%' if r.att.rate is not none else '—' }}</td></tr>{% else %}<tr><td colspan="9" class="muted">{{ L('O‘quvchilar yo‘q.','Нет учеников.') }}</td></tr>{% endfor %}</table></div>

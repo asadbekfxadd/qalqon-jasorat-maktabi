@@ -1,0 +1,4 @@
+<div class="gal">{% for g_ in gitems %}{% set v = video_info(g_.video_url) if g_.video_url else none %}
+<div class="gi">{% if g_.image_id %}<img loading="lazy" src="{{ url_for('auth.file', fid=g_.image_id) }}" alt="{{ g_.title }}">{% endif %}
+{% if v %}<a class="play" href="{{ g_.video_url }}" target="_blank" rel="noopener" aria-label="video">▶</a>{% endif %}
+<span>{{ nm(CATS, g_.category) }}{% if g_.title %} · {{ g_.title }}{% endif %}</span></div>{% endfor %}</div>

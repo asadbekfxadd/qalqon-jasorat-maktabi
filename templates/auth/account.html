@@ -1,0 +1,15 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Sozlamalar','Настройки') }}</h1><span class="pill">{{ nm(ROLE, me.role) }} · {{ me.username }}</span></div>
+{% if me.must_change %}<div class="flash warn">{{ L('Xavfsizlik uchun parolni almashtiring.','В целях безопасности смените пароль.') }}</div>{% endif %}
+<div class="grid g2">
+<form class="card stack" method="post">{{ tok() }}<input type="hidden" name="act" value="profile"><h3>{{ L('Profil','Профиль') }}</h3>
+<div><label>{{ L('F.I.Sh.','ФИО') }}</label><input name="full_name" value="{{ me.full_name }}" required></div>
+<div class="row"><div><label>{{ L('Telefon','Телефон') }}</label><input name="phone" value="{{ me.phone }}"></div><div><label>Email</label><input name="email" type="email" value="{{ me.email }}"></div></div>
+<div><label>Telegram chat ID ({{ L('bildirishnomalar uchun','для уведомлений') }})</label><input name="telegram_chat_id" value="{{ me.telegram_chat_id }}" inputmode="numeric"></div>
+<button class="btn">{{ L('Saqlash','Сохранить') }}</button></form>
+<form class="card stack" method="post">{{ tok() }}<input type="hidden" name="act" value="password"><h3>{{ L('Parolni almashtirish','Смена пароля') }}</h3>
+<div><label>{{ L('Joriy parol','Текущий пароль') }}</label><input name="old" type="password" autocomplete="current-password" required></div>
+<div><label>{{ L('Yangi parol','Новый пароль') }}</label><input name="new" type="password" autocomplete="new-password" required></div>
+<div><label>{{ L('Takrorlang','Повторите') }}</label><input name="new2" type="password" autocomplete="new-password" required></div>
+<p class="muted small" style="margin:0">{{ L('Kamida 8 belgi, harf va raqam.','Минимум 8 символов, буквы и цифры.') }}</p>
+<button class="btn">{{ L('Almashtirish','Сменить') }}</button></form></div>{% endblock %}

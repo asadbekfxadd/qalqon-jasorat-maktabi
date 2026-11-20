@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Hisobotlar','Отчёты') }}</h1>{% if rep or srep %}<button class="btn ghost no-print" onclick="window.print()">🖨 {{ L('Chop etish','Печать') }}</button>{% endif %}</div>
+<form class="card row no-print" style="margin-bottom:16px"><div><label>{{ L('Davr','Период') }}</label><select name="p">{% for k in PERIODS %}<option value="{{ k }}" {{ 'selected' if kind==k }}>{{ nm(PERIODS,k) }}</option>{% endfor %}</select></div>
+<div><label>{{ L('Sinf hisoboti','Отчёт по классу') }}</label><select name="class"><option value="">—</option>{% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if cid==c.id }}>{{ c.name }}</option>{% endfor %}</select></div>
+<div><label>{{ L('yoki o‘quvchi','или ученик') }}</label><select name="student"><option value="">—</option>{% for s in students %}<option value="{{ s.id }}" {{ 'selected' if srep and srep.student.id==s.id }}>{{ s.full_name }}</option>{% endfor %}</select></div>
+<div class="fit"><button class="btn">{{ L('Shakllantirish','Сформировать') }}</button></div>{% if rep %}<div class="fit"><button name="xlsx" value="1" class="btn ghost">⬇ Excel</button></div>{% endif %}</form>
+{% if rep %}{% include "partials/class_report.html" %}{% elif srep %}{% set r = srep %}{% include "partials/student_report.html" %}{% else %}<div class="empty">{{ L('Sinf yoki o‘quvchini tanlang.','Выберите класс или ученика.') }}</div>{% endif %}{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "app.html" %}{% block main %}
+{% if kids|length>1 %}{% include "cab/_kids.html" %}{% endif %}
+<div class="page-h"><h1>{{ L('Shaxsiy progress','Личный прогресс') }}</h1></div>
+<div class="grid g4" style="margin-bottom:14px"><div class="card kpi"><span>{{ L('O‘rtacha ball','Средний балл') }}</span><b>{{ avg if avg is not none else '—' }}</b></div><div class="card kpi"><span>{{ L('Sinf o‘rtachasi','Средний по классу') }}</span><b>{{ klass_avg if klass_avg is not none else '—' }}</b></div><div class="card kpi"><span>{{ L('Davomat','Посещаемость') }}</span><b>{{ att.rate ~ '%' if att.rate is not none else '—' }}</b></div></div>
+<div class="grid g2"><div class="card"><h3>{{ L('Oylar bo‘yicha dinamika','Динамика по месяцам') }}</h3><div class="chart"><canvas id="p1"></canvas></div></div><div class="card"><h3>{{ L('Fanlar bo‘yicha','По предметам') }}</h3><div class="chart"><canvas id="p2"></canvas></div></div></div>{% endblock %}
+{% block js %}<script src="{{ url_for('static', filename='vendor/chart.umd.js') }}"></script>
+<script type="application/json" id="cd">{{ chart|tojson }}</script>
+<script>(function(){var D=JSON.parse(document.getElementById('cd').textContent),cs=[];function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function build(){cs.forEach(function(c){c.destroy()});cs=[];if(!window.Chart)return;Chart.defaults.color=css('--muted');Chart.defaults.borderColor=css('--line');
+var o={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}};
+cs.push(new Chart(document.getElementById('p1'),{type:'line',data:{labels:D.labels,datasets:[{data:D.data,borderColor:css('--gold2'),backgroundColor:css('--gold')+'33',fill:true,tension:.3,pointRadius:4}]},options:Object.assign({},o,{scales:{y:{min:1,max:5}}})}));
+cs.push(new Chart(document.getElementById('p2'),{type:'bar',data:{labels:D.subj.map(function(x){return x[0]}),datasets:[{data:D.subj.map(function(x){return x[1]}),backgroundColor:css('--gold'),borderRadius:5}]},options:Object.assign({},o,{indexAxis:'y',scales:{x:{min:1,max:5}}})}))}
+window.qRedraw=build;build()})();</script>{% endblock %}

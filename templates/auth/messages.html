@@ -1,0 +1,13 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Xabarlar','Сообщения') }}</h1></div>
+{% if rcpts %}<form class="card stack" method="post" style="margin-bottom:20px">{{ tok() }}<h3>{{ L('Yangi xabar','Новое сообщение') }}</h3>
+<div class="row"><div style="flex:2 1 280px"><label>{{ L('Kimga','Кому') }}</label>
+<select name="rcpt" required onchange="var o=this.selectedOptions[0];this.form.student.value=o.dataset.s||''">{% for r,s in rcpts %}<option value="{{ r.id }}" data-s="{{ s.id if s else '' }}">{{ r.full_name }} ({{ nm(ROLE, r.role) }}){% if s %} — {{ s.full_name }}{% endif %}</option>{% endfor %}</select>
+<input type="hidden" name="student" value="{{ rcpts[0][1].id if rcpts[0][1] else '' }}"></div>
+<div style="flex:2 1 220px"><label>{{ L('Mavzu','Тема') }}</label><input name="subject" maxlength="200"></div></div>
+<div><label>{{ L('Xabar','Сообщение') }}</label><textarea name="body" required maxlength="4000"></textarea></div><button class="btn">{{ L('Yuborish','Отправить') }}</button></form>{% endif %}
+<div class="tabs"><a href="?tab=in" class="{{ 'on' if tab!='sent' }}">{{ L('Kiruvchi','Входящие') }}</a><a href="?tab=sent" class="{{ 'on' if tab=='sent' }}">{{ L('Yuborilgan','Отправленные') }}</a></div>
+{% for m in msgs %}<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>{{ (m.rcpt if tab=='sent' else m.sender).full_name }}{% if m.student %} <span class="muted">· {{ m.student.full_name }}</span>{% endif %}</b><span class="muted small">{{ fmtdt(m.created) }}</span></div>
+{% if m.subject %}<div style="color:var(--gold2)">{{ m.subject }}</div>{% endif %}<p style="white-space:pre-wrap;margin:.5em 0 0">{{ m.body }}</p>
+{% if tab!='sent' and rcpts %}<a class="small" href="?tab=in&to={{ m.sender_id }}#top" onclick="var s=document.querySelector('select[name=rcpt]');if(s){s.value='{{ m.sender_id }}';s.scrollIntoView({behavior:'smooth'});return false}">↩ {{ L('Javob berish','Ответить') }}</a>{% endif %}</div>
+{% else %}<div class="empty">{{ L('Xabarlar yo‘q.','Сообщений нет.') }}</div>{% endfor %}{% endblock %}

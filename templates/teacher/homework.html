@@ -1,0 +1,8 @@
+{% extends "app.html" %}{% block main %}
+<div class="page-h"><h1>{{ L('Uy vazifalari','Домашние задания') }}</h1></div>
+{% if pairs %}<form class="card stack" method="post" enctype="multipart/form-data" style="margin-bottom:16px">{{ tok() }}<h3>{{ L('Yangi topshiriq','Новое задание') }}</h3>
+<div class="row"><div><label>{{ L('Sinf · fan','Класс · предмет') }}</label><select name="pair">{% for k,s in pairs %}<option value="{{ k.id }}:{{ s.id }}">{{ k.name }} · {{ subj(s) }}</option>{% endfor %}</select></div>
+<div style="flex:2 1 240px"><label>{{ L('Mavzu','Тема') }}</label><input name="title" required></div><div style="flex:0 1 170px"><label>{{ L('Muddat','Срок сдачи') }}</label><input type="date" name="due" required></div></div>
+<div><label>{{ L('Tavsif','Описание') }}</label><textarea name="text"></textarea></div><div class="row"><div><label>{{ L('Fayllar (5 tagacha)','Файлы (до 5)') }}</label><input type="file" name="files" multiple></div><div class="fit"><button class="btn">{{ L('Berish','Выдать') }}</button></div></div></form>{% endif %}
+<div class="tw"><table><tr><th>{{ L('Sinf','Класс') }}</th><th>{{ L('Fan','Предмет') }}</th><th>{{ L('Mavzu','Тема') }}</th><th>{{ L('Muddat','Срок') }}</th><th>{{ L('Topshirildi','Сдано') }}</th><th>{{ L('Tekshirilmagan','Не проверено') }}</th></tr>
+{% for h in items %}<tr><td>{{ h.klass.name }}</td><td>{{ subj(h.subject) }}</td><td><a href="{{ url_for('teacher.homework_one', hid=h.id) }}">{{ h.title }}</a></td><td>{{ fmt(h.due) }}</td><td>{{ info[h.id][0] }}/{{ info[h.id][2] }}</td><td>{{ info[h.id][1] }}</td></tr>{% else %}<tr><td colspan="6" class="muted">—</td></tr>{% endfor %}</table></div>{% endblock %}
