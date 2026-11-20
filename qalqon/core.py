@@ -84,8 +84,9 @@ def subj_name(s):
 
 # ───────── настройки сайта ─────────
 DEFAULT_SETTINGS = {
-    "address": "Toshkent, Uzbekiston",
-    "address_ru": "Ташкент, Узбекистан",
+    "address": "Yangiyo‘l, Toshkent viloyati, O‘zbekiston",
+    "address_ru": "Янгиюль, Ташкентская область, Узбекистан",
+    "geo": "41.10261,69.09136",
     "phone": os.environ.get("SITE_PHONE", "+998 90 123 45 67"),
     "email": os.environ.get("SITE_EMAIL", "info@qalqon.uz"),
     "instagram": os.environ.get("SITE_INSTAGRAM", "https://www.instagram.com/qalqon.jasorat"),
