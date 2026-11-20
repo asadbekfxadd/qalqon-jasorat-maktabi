@@ -3,37 +3,91 @@
 <main>
 <div class="hero"><div class="wrap">
   <div>
-    <h1>Qalqon Jasorat<br>Maktabi</h1>
-    <p>{{ L('Военная школа: дисциплина, знания, физическая подготовка и мужество. Набор в группы для мальчиков и юношей 10–17 лет.','Harbiy maktab: intizom, bilim, jismoniy tayyorgarlik va jasorat. 10–17 yoshli o‘g‘il bolalar va o‘smirlar uchun guruhlarga qabul.') }}</p>
-    <div class="cta"><a class="btn" href="#signup">{{ L('Записаться','Yozilish') }}</a><a class="btn ghost" href="#locations">{{ L('Адреса и расписание','Manzillar va jadval') }}</a>
-    {% if not me %}<a class="btn ghost" href="{{ url_for('login') }}">{{ L('Дневник для родителей','Ota-onalar kundaligi') }}</a>{% endif %}</div>
+    <h1>Qalqon Jasorat<small>Maktabi · {{ L('военная школа','harbiy maktab') }}</small></h1>
+    <p class="lead">{{ L('Дисциплина, знания и физическая подготовка для мальчиков и юношей 10–17 лет. Занятия по расписанию, оценки и посещаемость — в электронном дневнике для родителей.','10–17 yoshli o‘g‘il bolalar va o‘smirlar uchun intizom, bilim va jismoniy tayyorgarlik. Jadval bo‘yicha mashg‘ulotlar, baholar va davomat — ota-onalar uchun elektron kundalikda.') }}</p>
+    <div class="cta"><a class="btn" href="#signup">{{ L('Записаться на пробное','Sinovga yozilish') }}</a><a class="btn ghost" href="#locations">{{ L('Адреса и расписание','Manzillar va jadval') }}</a></div>
   </div>
-  <img class="emblem" src="{{ url_for('static', filename='logo.jpg') }}" alt="Qalqon Jasorat Maktabi">
+  <div class="plate"><img src="{{ url_for('static', filename='logo.jpg') }}" alt="Qalqon Jasorat Maktabi"></div>
+</div><div class="stripe"></div></div>
+
+<div class="ribbon"><div class="wrap">
+  <div class="k"><b>10–17</b><span>{{ L('лет — возраст учеников','yosh — o‘quvchilar yoshi') }}</span></div>
+  <div class="k"><b>3×</b><span>{{ L('занятия в неделю','haftada mashg‘ulot') }}</span></div>
+  <div class="k"><b>≤ 20</b><span>{{ L('человек в группе','kishi guruhda') }}</span></div>
+  <div class="k"><b>0</b><span>{{ L('сум — пробное занятие','so‘m — sinov mashg‘uloti') }}</span></div>
 </div></div>
 
 <section class="blk" id="about"><div class="wrap">
-  <h2>{{ L('Чему учим','Nimalarni o‘rgatamiz') }}</h2>
-  <p class="muted" style="max-width:56ch;margin-bottom:28px">{{ L('Тексты на этой странице — пример, замените на реальные.','Bu sahifadagi matnlar namuna, haqiqiylariga almashtiring.') }}</p>
-  <div class="facts">
-    <div class="fact"><h3>{{ L('Строевая и дисциплина','Saf va intizom') }}</h3><p>{{ L('Построения, порядок, ответственность за себя и команду.','Saf mashqlari, tartib, o‘zi va jamoa uchun mas’uliyat.') }}</p></div>
-    <div class="fact"><h3>{{ L('Физподготовка','Jismoniy tayyorgarlik') }}</h3><p>{{ L('Кроссы, силовая, полоса препятствий, рукопашный бой.','Kross, kuch mashqlari, to‘siqlar yo‘lagi, qo‘l jangi.') }}</p></div>
-    <div class="fact"><h3>{{ L('Знания и навыки','Bilim va ko‘nikmalar') }}</h3><p>{{ L('Учёба, ориентирование, первая помощь, работа в группе.','O‘qish, mo‘ljal olish, birinchi yordam, guruhda ishlash.') }}</p></div>
-    <div class="fact"><h3>{{ L('Электронный дневник','Elektron kundalik') }}</h3><p>{{ L('Родители видят оценки, посещаемость и задания своего ребёнка.','Ota-onalar farzandining baholari, davomati va topshiriqlarini ko‘radi.') }}</p></div>
+  <div class="sec-head"><h2>{{ L('Чему мы учим','Nimalarni o‘rgatamiz') }}</h2><p>{{ L('Четыре направления, которые вместе формируют дисциплину и характер.','Intizom va xarakter shakllantiradigan to‘rt yo‘nalish.') }}</p></div>
+  <div class="cards4">
+    <div class="prog"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M6 14l16-8 16 8M6 24l16-8 16 8M6 34l16-8 16 8"/></svg><h3>{{ L('Строевая и дисциплина','Saf va intizom') }}</h3><p>{{ L('Построения, команды, порядок. Ответственность за себя и за товарища.','Saflanish, buyruqlar, tartib. O‘zi va o‘rtog‘i uchun mas’uliyat.') }}</p></div>
+    <div class="prog"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 4l5 12 13 1-10 8 3 13-11-7-11 7 3-13-10-8 13-1z"/></svg><h3>{{ L('Физподготовка','Jismoniy tayyorgarlik') }}</h3><p>{{ L('Кроссы, силовая, полоса препятствий, основы рукопашного боя.','Kross, kuch mashqlari, to‘siqlar yo‘lagi, qo‘l jangi asoslari.') }}</p></div>
+    <div class="prog"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="17"/><path d="M22 5v10M22 29v10M5 22h10M29 22h10"/><circle cx="22" cy="22" r="3"/></svg><h3>{{ L('Тактика и навыки','Taktika va ko‘nikmalar') }}</h3><p>{{ L('Ориентирование, первая помощь, работа в команде, выживание.','Mo‘ljal olish, birinchi yordam, jamoada ishlash, omon qolish.') }}</p></div>
+    <div class="prog"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M6 8h14a3 3 0 013 3v26a3 3 0 00-3-3H6zM38 8H24a3 3 0 00-3 3v26a3 3 0 013-3h14z"/></svg><h3>{{ L('Знания','Bilim') }}</h3><p>{{ L('История, право, этика, ответственность. Учёба идёт рядом с тренировкой.','Tarix, huquq, odob, mas’uliyat. O‘qish mashq bilan yonma-yon boradi.') }}</p></div>
+  </div>
+  <p class="demo">{{ L('Тексты — примеры, замените на реальные программы школы.','Matnlar — namuna, maktabning haqiqiy dasturlariga almashtiring.') }}</p>
+</div></section>
+
+<section class="blk alt" id="day"><div class="wrap split">
+  <div class="sec-head"><h2>{{ L('Как проходит занятие','Mashg‘ulot qanday o‘tadi') }}</h2><p>{{ L('Чёткий распорядок: ребёнок знает, что будет дальше, а итоги попадают в дневник в тот же день.','Aniq tartib: bola keyin nima bo‘lishini biladi, natijalar shu kuni kundalikka tushadi.') }}</p></div>
+  <ol class="timeline">
+    <li><time>17:00</time><div><b>{{ L('Построение и перекличка','Saf va nomma-nom chaqiruv') }}</b><span>{{ L('Отметка посещаемости, проверка формы.','Davomat belgilanadi, forma tekshiriladi.') }}</span></div></li>
+    <li><time>17:10</time><div><b>{{ L('Разминка','Qizdirinish') }}</b><span>{{ L('Бег, суставная гимнастика, растяжка.','Yugurish, bo‘g‘im gimnastikasi, cho‘zilish.') }}</span></div></li>
+    <li><time>17:30</time><div><b>{{ L('Основная часть','Asosiy qism') }}</b><span>{{ L('Строевая, тактика или силовая — по плану недели.','Saf, taktika yoki kuch mashqlari — hafta rejasi bo‘yicha.') }}</span></div></li>
+    <li><time>18:20</time><div><b>{{ L('Теория','Nazariya') }}</b><span>{{ L('Короткий урок: первая помощь, карта, устав.','Qisqa dars: birinchi yordam, xarita, nizom.') }}</span></div></li>
+    <li><time>18:45</time><div><b>{{ L('Итоги и оценки','Yakun va baholar') }}</b><span>{{ L('Разбор занятия, оценки и задание — в дневник.','Mashg‘ulot tahlili, baholar va topshiriq — kundalikka.') }}</span></div></li>
+  </ol>
+</div></section>
+
+<section class="blk" id="how"><div class="wrap">
+  <div class="sec-head"><h2>{{ L('Как начать','Qanday boshlash') }}</h2></div>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>{{ L('Оставьте заявку','Ariza qoldiring') }}</h3><p>{{ L('Имя ребёнка, возраст и телефон.','Bolaning ismi, yoshi va telefon.') }}</p></div>
+    <div class="step"><div class="n">2</div><h3>{{ L('Мы позвоним','Biz qo‘ng‘iroq qilamiz') }}</h3><p>{{ L('Администратор филиала ответит на вопросы в течение дня.','Filial administratori bir kun ichida savollarga javob beradi.') }}</p></div>
+    <div class="step"><div class="n">3</div><h3>{{ L('Пробное занятие','Sinov mashg‘uloti') }}</h3><p>{{ L('Бесплатно. Ребёнок знакомится с группой и учителем.','Bepul. Bola guruh va o‘qituvchi bilan tanishadi.') }}</p></div>
+    <div class="step"><div class="n">4</div><h3>{{ L('Дневник для родителей','Ota-onalar kundaligi') }}</h3><p>{{ L('После записи школа выдаёт логин и пароль.','Yozilgach, maktab login va parol beradi.') }}</p></div>
   </div>
 </div></section>
 
-<section class="blk" id="locations" style="padding-top:0"><div class="wrap">
-  <h2>{{ L('Адреса','Manzillar') }}</h2>
-  {% if branches %}<div class="grid g3" style="margin-top:18px">
+<section class="blk alt" id="diary"><div class="wrap split">
+  <div>
+    <h2>{{ L('Электронный дневник','Elektron kundalik') }}</h2>
+    <p class="muted">{{ L('Родители видят успехи ребёнка без звонков и переписок. Каждый учитель отмечает всё в своём кабинете.','Ota-onalar qo‘ng‘iroq va yozishmalarsiz farzandining yutuqlarini ko‘radi. Har bir o‘qituvchi hammasini o‘z kabinetida belgilaydi.') }}</p>
+    <ul class="checks"><li>{{ L('Оценки и комментарии учителя','Baholar va o‘qituvchi izohlari') }}</li><li>{{ L('Посещаемость, пропуски и опоздания','Davomat, qoldirilgan darslar va kechikishlar') }}</li><li>{{ L('Домашние задания со сроками','Muddatli uy vazifalari') }}</li><li>{{ L('Объявления школы и группы','Maktab va guruh e’lonlari') }}</li><li>{{ L('Русский и узбекский язык','Rus va o‘zbek tillari') }}</li></ul>
+    <p style="margin-top:22px"><a class="btn" href="{{ url_for('login') }}">{{ L('Войти в дневник','Kundalikka kirish') }}</a></p>
+  </div>
+  <div class="dtag" aria-label="{{ L('Пример дневника','Kundalik namunasi') }}">
+    <header><b>{{ L('Азиз А.','Aziz A.') }}</b><span>{{ L('пример','namuna') }}</span></header>
+    <div class="row"><span>{{ L('Строевая','Saf') }}</span><span class="score s5">5</span></div>
+    <div class="row"><span>{{ L('Физподготовка','Jismoniy tayyorgarlik') }}</span><span class="score s4">4</span></div>
+    <div class="row"><span>{{ L('Знания','Bilim') }}</span><span class="score s5">5</span></div>
+    <div class="row"><span>{{ L('Посещаемость','Davomat') }}</span><span class="tag present">92%</span></div>
+    <div class="row"><span>{{ L('Задание','Topshiriq') }}</span><span class="muted small">{{ L('Подтягивания, до пт','Tortilish, juma gacha') }}</span></div>
+  </div>
+</div></section>
+
+<section class="blk" id="locations"><div class="wrap">
+  <div class="sec-head"><h2>{{ L('Адреса и расписание','Manzillar va jadval') }}</h2><p>{{ L('Выберите ближайший филиал.','Eng yaqin filialni tanlang.') }}</p></div>
+  {% if branches %}<div class="grid g3">
   {% for b in branches %}<div class="branch"><h3>{{ b.city }}{% if b.area %} · {{ b.area }}{% endif %}</h3>
     <dl><dt>{{ L('Адрес','Manzil') }}</dt><dd>{{ b.address }}</dd><dt>{{ L('Расписание','Jadval') }}</dt><dd>{{ b.schedule }}</dd><dt>{{ L('Возраст','Yosh') }}</dt><dd>{{ b.ages }}</dd>
     {% if b.phone %}<dt>{{ L('Телефон','Telefon') }}</dt><dd><a href="tel:{{ b.phone|replace(' ','') }}">{{ b.phone }}</a></dd>{% endif %}</dl>
-    {% if b.map_url %}<p style="margin:12px 0 0"><a href="{{ b.map_url }}" target="_blank" rel="noopener">{{ L('Открыть на карте','Xaritada ochish') }}</a></p>{% endif %}</div>{% endfor %}
+    {% if b.map_url %}<p style="margin:14px 0 0"><a href="{{ b.map_url }}" target="_blank" rel="noopener">{{ L('Открыть на карте','Xaritada ochish') }}</a></p>{% endif %}</div>{% endfor %}
   </div>{% else %}<p class="muted">{{ L('Филиалы скоро появятся.','Filiallar tez orada paydo bo‘ladi.') }}</p>{% endif %}
 </div></section>
 
-<section class="blk signup" id="signup"><div class="wrap grid g2" style="gap:44px">
-  <div><h2>{{ L('Запись на пробное занятие','Sinov mashg‘ulotiga yozilish') }}</h2><p class="muted">{{ L('Оставьте данные — администратор филиала перезвонит в течение дня. Пробное занятие бесплатно.','Ma’lumotlaringizni qoldiring — filial administratori bir kun ichida qo‘ng‘iroq qiladi. Sinov mashg‘uloti bepul.') }}</p></div>
+<section class="blk alt" id="faq"><div class="wrap split">
+  <div class="sec-head"><h2>{{ L('Частые вопросы','Ko‘p so‘raladigan savollar') }}</h2></div>
+  <div class="faq">
+    <details><summary>{{ L('Что взять на первое занятие?','Birinchi mashg‘ulotga nima olib kelish kerak?') }}</summary><p>{{ L('Спортивную форму и сменную обувь, воду. Остальное выдаст школа.','Sport kiyimi va almashtiriladigan oyoq kiyim, suv. Qolganini maktab beradi.') }}</p></details>
+    <details><summary>{{ L('Сколько стоит обучение?','O‘qish qancha turadi?') }}</summary><p>{{ L('Стоимость зависит от филиала. Назовёт администратор по телефону, пробное занятие бесплатно.','Narx filialga bog‘liq. Administrator telefonda aytadi, sinov mashg‘uloti bepul.') }}</p></details>
+    <details><summary>{{ L('Что если ребёнок пропустил занятие?','Bola darsni qoldirsa nima bo‘ladi?') }}</summary><p>{{ L('Пропуск отмечается в дневнике, учитель даст материал для самостоятельной отработки.','Qoldirilgan dars kundalikda belgilanadi, o‘qituvchi mustaqil o‘zlashtirish uchun material beradi.') }}</p></details>
+    <details><summary>{{ L('Как родителю получить доступ к дневнику?','Ota-ona kundalikka qanday kiradi?') }}</summary><p>{{ L('После записи администратор создаст аккаунт и выдаст логин и временный пароль.','Yozilgach, administrator akkaunt yaratadi va login hamda vaqtinchalik parol beradi.') }}</p></details>
+  </div>
+</div></section>
+
+<section class="blk signup" id="signup"><div class="wrap split">
+  <div class="sec-head"><h2>{{ L('Запись на пробное занятие','Sinov mashg‘ulotiga yozilish') }}</h2><p class="muted">{{ L('Оставьте данные, администратор филиала перезвонит в течение дня. Пробное занятие бесплатно.','Ma’lumotlaringizni qoldiring, filial administratori bir kun ichida qo‘ng‘iroq qiladi. Sinov mashg‘uloti bepul.') }}</p></div>
   <div>
     {% with m = get_flashed_messages(with_categories=true) %}{% for c, t in m %}<div class="flash {{ c }}" role="status">{{ t }}</div>{% endfor %}{% endwith %}
     <form method="post" action="{{ url_for('apply') }}" class="grid g2">{{ tok() }}
