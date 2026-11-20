@@ -25,7 +25,7 @@ SITE = dict(
     name="Qalqon Jasorat Maktabi",
     phone=os.environ.get("SITE_PHONE", "+998 90 123 45 67"),
     email=os.environ.get("SITE_EMAIL", "info@qalqon.uz"),
-    instagram=os.environ.get("SITE_INSTAGRAM", "https://www.instagram.com/qalqon"),
+    instagram=os.environ.get("SITE_INSTAGRAM", "https://www.instagram.com/qalqon.jasorat"),
     telegram=os.environ.get("SITE_TELEGRAM", "https://t.me/qalqon"),
 )
 TZ = timezone(timedelta(hours=5))
