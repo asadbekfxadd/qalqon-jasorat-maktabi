@@ -58,8 +58,9 @@ details.card summary{cursor:pointer;font-weight:600}
 .hero{background:var(--bg);position:relative;overflow:hidden;
   background-image:repeating-radial-gradient(ellipse at 15% 110%,transparent 0 46px,rgba(43,54,37,.07) 46px 48px)}
 .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center;padding-top:60px;padding-bottom:70px}
-.hero h1{font-size:clamp(50px,8vw,100px);text-transform:uppercase;line-height:.95;color:var(--olive);margin-bottom:.25em}
+.hero h1{font-size:clamp(52px,8.2vw,104px);text-transform:uppercase;line-height:.92;color:var(--olive);margin-bottom:.2em}
 .hero h1 small{display:block;font-size:.42em;letter-spacing:.14em;color:var(--brass-d);margin-top:.35em}
+.hero .call{font:700 clamp(26px,3.4vw,38px)/1.1 "Barlow Condensed",sans-serif;color:var(--brass-d);margin:0 0 14px;max-width:20ch}
 .hero .lead{max-width:46ch;font-size:20px;margin:0 0 26px;color:#33392C}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
 .plate{position:relative;justify-self:center;width:100%;max-width:400px;padding:22px;color:var(--on-dark);
@@ -152,3 +153,5 @@ section.alt{background:var(--paper);border-block:1px solid var(--line)}
 .clip.on small::before{content:"● ";color:#C0392B}
 @media (max-width:900px){.field .grid2{grid-template-columns:1fr}.clips{flex-direction:row;overflow-x:auto;padding-bottom:8px}.clip{min-width:250px}.monitor{box-shadow:5px 5px 0 var(--brass)}}
 @media (prefers-reduced-motion:reduce){.osd .rec i,.nosignal b{animation:none}}
+
+@media (max-width:520px){.brand{font-size:16px;letter-spacing:.04em}.logo{width:30px;height:34px}}

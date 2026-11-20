@@ -12,7 +12,7 @@
 {% macro tok() %}<input type="hidden" name="_csrf" value="{{ csrf() }}">{% endmacro %}
 {% macro ep(name) %}{{ 'on' if request.endpoint == name else '' }}{% endmacro %}
 <header class="top"><div class="wrap">
-  <a class="brand" href="{{ url_for('index') }}"><span class="logo"><img src="{{ url_for('static', filename='logo.jpg') }}" alt=""></span>QALQON JASORAT</a>
+  <a class="brand" href="{{ url_for('index') }}"><span class="logo"><img src="{{ url_for('static', filename='logo.jpg') }}" alt=""></span>QALQON JASORAT MAKTABI</a>
   <nav class="nav" aria-label="menu">
     {% if not me %}
       <a href="{{ url_for('index') }}#chronicle">{{ L('Видео','Video') }}</a>
