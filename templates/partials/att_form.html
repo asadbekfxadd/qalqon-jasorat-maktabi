@@ -1,4 +1,4 @@
 <form method="post">{{ tok() }}<input type="hidden" name="class" value="{{ kl.id }}"><input type="hidden" name="day" value="{{ day }}">
-<div class="tw"><table><tr><th>{{ L('O‘quvchi','Ученик') }}</th><th>{{ L('Holat','Статус') }}</th><th>{{ L('Sabab','Причина') }}</th></tr>
+<div class="tw"><table class="rt"><tr><th>{{ L('O‘quvchi','Ученик') }}</th><th>{{ L('Holat','Статус') }}</th><th>{{ L('Sabab','Причина') }}</th></tr>
 {% for s in kl.students %}{% set a = att.get(s.id) %}<tr><td>{{ s.full_name }}</td><td><select name="att_{{ s.id }}"><option value="">—</option>{% for k in ATT %}<option value="{{ k }}" {{ 'selected' if a and a.status==k }}>{{ nm(ATT,k) }}</option>{% endfor %}</select></td><td><input name="reason_{{ s.id }}" value="{{ a.reason if a else '' }}"></td></tr>
 {% else %}<tr><td colspan="3" class="muted">{{ L('Sinfda o‘quvchilar yo‘q.','В классе нет учеников.') }}</td></tr>{% endfor %}</table></div><p><button class="btn">{{ L('Davomatni saqlash','Сохранить посещаемость') }}</button></p></form>

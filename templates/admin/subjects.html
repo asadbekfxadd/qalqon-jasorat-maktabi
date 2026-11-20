@@ -1,6 +1,6 @@
 {% extends "app.html" %}{% block main %}
 <div class="page-h"><h1>{{ L('Fanlar','Предметы') }}</h1></div>
 <form class="card row" method="post" style="margin-bottom:16px">{{ tok() }}<input type="hidden" name="act" value="create"><div><label>Nomi (UZ)</label><input name="name" required></div><div><label>Название (RU)</label><input name="name_ru"></div><div class="fit"><button class="btn">{{ L('Qo‘shish','Добавить') }}</button></div></form>
-<div class="tw"><table><tr><th>UZ</th><th>RU</th><th></th></tr>{% for s in items %}<tr><form id="s{{ s.id }}" method="post">{{ tok() }}<input type="hidden" name="id" value="{{ s.id }}"></form>
+<div class="tw"><table class="rt"><tr><th>UZ</th><th>RU</th><th></th></tr>{% for s in items %}<tr><form id="s{{ s.id }}" method="post">{{ tok() }}<input type="hidden" name="id" value="{{ s.id }}"></form>
 <td><input form="s{{ s.id }}" name="name" value="{{ s.name }}"> {% if s.is_demo %}<span class="pill demo">DEMO</span>{% endif %}</td><td><input form="s{{ s.id }}" name="name_ru" value="{{ s.name_ru }}"></td>
 <td class="nowrap"><button form="s{{ s.id }}" name="act" value="save" class="btn sm">{{ L('Saqlash','Сохранить') }}</button> <button form="s{{ s.id }}" name="act" value="delete" class="btn danger sm" onclick="return confirm('{{ L('Fan va uning baholari o‘chiriladi!','Предмет и его оценки будут удалены!') }}')">✕</button></td></tr>{% endfor %}</table></div>{% endblock %}

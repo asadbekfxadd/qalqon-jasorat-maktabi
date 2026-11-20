@@ -1,6 +1,6 @@
 {% extends "app.html" %}{% block main %}
 <div class="page-h"><h1>{{ L('Uy vazifalari','Домашние задания') }}</h1></div>
 <div class="tabs"><a href="?" class="{{ 'on' if not request.args['class'] }}">{{ L('Hammasi','Все') }}</a>{% for c in classes %}<a href="?class={{ c.id }}" class="{{ 'on' if request.args['class']==c.id|string }}">{{ c.name }}</a>{% endfor %}</div>
-<div class="tw"><table><tr><th>{{ L('Sinf','Класс') }}</th><th>{{ L('Fan','Предмет') }}</th><th>{{ L('Mavzu','Тема') }}</th><th>{{ L('Muddat','Срок') }}</th><th>{{ L('Topshirildi','Сдано') }}</th><th>{{ L('O‘qituvchi','Учитель') }}</th><th></th></tr>
+<div class="tw"><table class="rt"><tr><th>{{ L('Sinf','Класс') }}</th><th>{{ L('Fan','Предмет') }}</th><th>{{ L('Mavzu','Тема') }}</th><th>{{ L('Muddat','Срок') }}</th><th>{{ L('Topshirildi','Сдано') }}</th><th>{{ L('O‘qituvchi','Учитель') }}</th><th></th></tr>
 {% for h in items %}<tr><td>{{ h.klass.name }}</td><td>{{ subj(h.subject) }}</td><td>{{ h.title }}{% if h.is_demo %} <span class="pill demo">DEMO</span>{% endif %}</td><td>{{ fmt(h.due) }}</td><td>{{ counts[h.id][0] }}/{{ counts[h.id][1] }}</td><td>{{ h.teacher.full_name if h.teacher else '' }}</td>
 <td><form method="post" data-confirm="?">{{ tok() }}<input type="hidden" name="act" value="delete"><input type="hidden" name="id" value="{{ h.id }}"><button class="btn danger sm">✕</button></form></td></tr>{% else %}<tr><td colspan="7" class="muted">—</td></tr>{% endfor %}</table></div>{% endblock %}

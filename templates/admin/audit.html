@@ -1,5 +1,5 @@
 {% extends "app.html" %}{% block main %}
 <div class="page-h"><h1>{{ L('Harakatlar jurnali','Журнал действий') }}</h1></div>
 <form class="card row" style="margin-bottom:16px"><div><label>{{ L('Harakat','Действие') }}</label><select name="action"><option value="">—</option>{% for a in actions %}<option {{ 'selected' if request.args.action==a }}>{{ a }}</option>{% endfor %}</select></div><div><label>{{ L('Foydalanuvchi','Пользователь') }}</label><input name="q" value="{{ request.args.q or '' }}"></div><div class="fit"><button class="btn">{{ L('Filtr','Фильтр') }}</button></div></form>
-<div class="tw"><table><tr><th>{{ L('Vaqt','Время') }}</th><th>{{ L('Foydalanuvchi','Пользователь') }}</th><th>{{ L('Harakat','Действие') }}</th><th>{{ L('Tafsilot','Детали') }}</th><th>IP</th></tr>
+<div class="tw"><table class="rt"><tr><th>{{ L('Vaqt','Время') }}</th><th>{{ L('Foydalanuvchi','Пользователь') }}</th><th>{{ L('Harakat','Действие') }}</th><th>{{ L('Tafsilot','Детали') }}</th><th>IP</th></tr>
 {% for e in items %}<tr><td class="nowrap">{{ fmtdt(e.created) }}</td><td>{{ e.username or '—' }}</td><td><span class="pill {{ 'rejected' if e.action in ('login_failed','denied') }}">{{ e.action }}</span></td><td>{{ e.detail }}</td><td class="muted small">{{ e.ip }}</td></tr>{% endfor %}</table></div>{% endblock %}

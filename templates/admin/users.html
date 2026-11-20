@@ -8,7 +8,7 @@
 <p class="muted small" style="margin:10px 0 0">{{ L('Bo‘sh qoldirsangiz, login va parol avtomatik yaratiladi; foydalanuvchi birinchi kirishda parolni almashtiradi.','Если оставить пустым — логин и пароль создаются автоматически; пользователь сменит пароль при первом входе.') }}</p></form>
 <div class="tabs"><a href="?" class="{{ 'on' if not role }}">{{ L('Hammasi','Все') }}</a>{% for r in ROLE %}<a href="?role={{ r }}" class="{{ 'on' if role==r }}">{{ nm(ROLE,r) }}</a>{% endfor %}
 <form style="margin-left:auto;display:flex;gap:6px"><input name="q" placeholder="{{ L('Qidirish','Поиск') }}" value="{{ request.args.q or '' }}" style="width:200px">{% if role %}<input type="hidden" name="role" value="{{ role }}">{% endif %}<button class="btn ghost sm">⌕</button></form></div>
-<div class="tw"><table><tr><th>{{ L('Login','Логин') }}</th><th>{{ L('F.I.Sh.','ФИО') }}</th><th>{{ L('Rol','Роль') }}</th><th>{{ L('Telefon / Email','Телефон / Email') }}</th><th>{{ L('Oxirgi kirish','Посл. вход') }}</th><th></th></tr>
+<div class="tw"><table class="rt"><tr><th>{{ L('Login','Логин') }}</th><th>{{ L('F.I.Sh.','ФИО') }}</th><th>{{ L('Rol','Роль') }}</th><th>{{ L('Telefon / Email','Телефон / Email') }}</th><th>{{ L('Oxirgi kirish','Посл. вход') }}</th><th></th></tr>
 {% for u in items %}<tr><form id="f{{ u.id }}" method="post">{{ tok() }}<input type="hidden" name="id" value="{{ u.id }}"></form>
 <td><b>{{ u.username }}</b>{% if u.is_demo %} <span class="pill demo">DEMO</span>{% endif %}{% if not u.active %} <span class="pill rejected">{{ L('o‘chirilgan','отключён') }}</span>{% endif %}</td>
 <td><input form="f{{ u.id }}" name="full_name" value="{{ u.full_name }}"></td>
@@ -18,7 +18,7 @@
 <td class="nowrap"><button form="f{{ u.id }}" name="act" value="save" class="btn sm">{{ L('Saqlash','Сохранить') }}</button>
 <button form="f{{ u.id }}" name="act" value="reset" class="btn ghost sm" onclick="return confirm('{{ L('Yangi vaqtinchalik parol berilsinmi?','Выдать новый временный пароль?') }}')">{{ L('Parol','Пароль') }}</button>
 {% if u.id!=me.id %}<button form="f{{ u.id }}" name="act" value="toggle" class="btn danger sm">{{ L('Yoqish/o‘chirish','Вкл/выкл') }}</button>{% endif %}</td></tr>{% endfor %}</table></div>
-<div class="card" style="margin-top:16px"><h3>{{ L('Rollar va ruxsatlar','Роли и доступы') }}</h3><div class="tw"><table>
+<div class="card" style="margin-top:16px"><h3>{{ L('Rollar va ruxsatlar','Роли и доступы') }}</h3><div class="tw"><table class="rt">
 <tr><th>{{ L('Rol','Роль') }}</th><th>{{ L('Nimani ko‘radi','Что видит') }}</th><th>{{ L('Nima qila oladi','Что может') }}</th></tr>
 <tr><td>{{ nm(ROLE,'admin') }}</td><td>{{ L('Butun tizim','Вся система') }}</td><td>{{ L('Hisoblar, sinflar, jadval, arizalar, kontent, hisobotlar, jurnal','Аккаунты, классы, расписание, заявки, контент, отчёты, журнал') }}</td></tr>
 <tr><td>{{ nm(ROLE,'teacher') }}</td><td>{{ L('Faqat biriktirilgan sinf va fanlar','Только назначенные классы и предметы') }}</td><td>{{ L('Baho, davomat, uy vazifasi, material, xabar, e’lon','Оценки, посещаемость, ДЗ, материалы, сообщения, объявления') }}</td></tr>
