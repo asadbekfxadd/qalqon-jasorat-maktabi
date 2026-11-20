@@ -1,5 +1,6 @@
 """Qalqon Jasorat Maktabi — сайт, дневник и кабинеты (админ / учитель / родитель)."""
-import os, secrets, threading, time, json, urllib.request
+import os, re, secrets, threading, time, json, urllib.request
+from urllib.parse import urlparse, parse_qs
 from datetime import date, datetime, timedelta, timezone
 from functools import wraps
 from flask import (Flask, render_template, request, redirect, url_for, session,
@@ -118,6 +119,41 @@ class Application(db.Model):
     status = db.Column(db.String(10), default="new")        # new | called | enrolled | rejected
     branch = db.relationship("Branch")
 
+class Video(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), default="")
+    url = db.Column(db.String(500), nullable=False)
+    vertical = db.Column(db.Boolean, default=False)
+    sort = db.Column(db.Integer, default=0)
+
+def video_info(url):
+    """Разбирает ссылку и возвращает данные для плеера. Только разрешённые сервисы (без произвольных iframe)."""
+    try: u = urlparse((url or "").strip())
+    except ValueError: return None
+    if u.scheme != "https" or not u.hostname: return None
+    host, path = u.hostname.lower().removeprefix("www."), u.path
+    if host in ("youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be"):
+        vid, vert = None, False
+        if host == "youtu.be": m = re.match(r"^/([\w-]{11})", path); vid = m and m[1]
+        else:
+            m = re.match(r"^/(shorts|embed|live)/([\w-]{11})", path)
+            if m: vid, vert = m[2], m[1] == "shorts"
+            else:
+                v = parse_qs(u.query).get("v", [""])[0]; vid = v if re.fullmatch(r"[\w-]{11}", v) else None
+        if vid: return dict(kind="iframe", src=f"https://www.youtube.com/embed/{vid}?autoplay=1&rel=0&playsinline=1", thumb=f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg", vertical=vert)
+    elif host == "instagram.com":
+        m = re.match(r"^/(?:[\w.]+/)?(reel|reels|p|tv)/([\w-]+)", path)
+        if m: return dict(kind="iframe", src=f"https://www.instagram.com/{'reel' if m[1] == 'reels' else m[1]}/{m[2]}/embed", thumb="", vertical=m[1] in ("reel", "reels"))
+    elif host == "t.me":
+        m = re.match(r"^/([A-Za-z0-9_]{4,})/(\d+)$", path)
+        if m: return dict(kind="iframe", src=f"https://t.me/{m[1]}/{m[2]}?embed=1&mode=tme", thumb="", vertical=False)
+    elif host == "vimeo.com":
+        m = re.match(r"^/(\d+)", path)
+        if m: return dict(kind="iframe", src=f"https://player.vimeo.com/video/{m[1]}?autoplay=1", thumb="", vertical=False)
+    if path.lower().endswith((".mp4", ".webm", ".mov", ".m4v")):
+        return dict(kind="file", src=url.strip(), thumb="", vertical=False)
+    return None
+
 # ───────────────────────── язык ─────────────────────────
 def lang(): return session.get("lang", "ru")
 @app.context_processor
@@ -192,7 +228,11 @@ def clean(name, n): return (request.form.get(name) or "").strip()[:n]
 # ───────────────────────── публичный сайт ─────────────────────────
 @app.route("/")
 def index():
-    return render_template("index.html", branches=Branch.query.order_by(Branch.id).all())
+    vids = []
+    for v in Video.query.order_by(Video.sort, Video.id).all():
+        info = video_info(v.url)
+        if info: info["vertical"] = bool(v.vertical or info["vertical"]); vids.append(dict(info, id=v.id, title=v.title))
+    return render_template("index.html", branches=Branch.query.order_by(Branch.id).all(), videos=vids)
 
 @app.post("/apply")
 def apply():
@@ -374,6 +414,32 @@ def a_news():
         db.session.commit(); return redirect(url_for("a_news"))
     groups = Group.query.order_by(Group.name).all() if g.me.role == "admin" else Group.query.filter_by(teacher_id=g.me.id).all()
     return render_template("a_news.html", news=Announcement.query.order_by(Announcement.day.desc(), Announcement.id.desc()).limit(100).all(), groups=groups)
+
+
+@app.route("/admin/videos", methods=["GET", "POST"])
+@need("admin")
+def a_videos():
+    if request.method == "POST":
+        act = request.form.get("act")
+        if act == "add":
+            url = clean("url", 500)
+            if not video_info(url): flash(LL("Ссылка не подходит. Нужна https-ссылка на YouTube, Instagram (reel/post), Telegram-пост, Vimeo или файл .mp4.", "Havola mos emas. YouTube, Instagram (reel/post), Telegram posti, Vimeo yoki .mp4 fayl uchun https-havola kerak."), "err")
+            else:
+                last = db.session.query(func.max(Video.sort)).scalar() or 0
+                db.session.add(Video(title=clean("title", 120), url=url, vertical=bool(request.form.get("vertical")), sort=last + 1))
+                db.session.commit(); flash(LL("Видео добавлено.", "Video qo‘shildi."), "ok")
+        else:
+            items = Video.query.order_by(Video.sort, Video.id).all()
+            v = next((x for x in items if x.id == request.form.get("id", type=int)), None)
+            if v and act == "delete": db.session.delete(v)
+            elif v and act in ("up", "down"):
+                i = items.index(v); j = i - 1 if act == "up" else i + 1
+                if 0 <= j < len(items): items[i], items[j] = items[j], items[i]
+                for n, x in enumerate(items): x.sort = n
+            db.session.commit()
+        return redirect(url_for("a_videos"))
+    rows = [(v, video_info(v.url)) for v in Video.query.order_by(Video.sort, Video.id).all()]
+    return render_template("a_videos.html", rows=rows)
 
 # ───────────────────────── учитель ─────────────────────────
 def my_group(gid):

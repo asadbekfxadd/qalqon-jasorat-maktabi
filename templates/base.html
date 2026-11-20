@@ -15,6 +15,7 @@
   <a class="brand" href="{{ url_for('index') }}"><span class="logo"><img src="{{ url_for('static', filename='logo.jpg') }}" alt=""></span>QALQON JASORAT</a>
   <nav class="nav" aria-label="menu">
     {% if not me %}
+      <a href="{{ url_for('index') }}#chronicle">{{ L('Видео','Video') }}</a>
       <a href="{{ url_for('index') }}#about">{{ L('О школе','Maktab haqida') }}</a>
       <a href="{{ url_for('index') }}#locations">{{ L('Адреса','Manzillar') }}</a>
       <a href="{{ url_for('index') }}#signup">{{ L('Запись','Yozilish') }}</a>
@@ -24,6 +25,7 @@
       <a class="{{ ep('a_students') }}" href="{{ url_for('a_students') }}">{{ L('Ученики','O‘quvchilar') }}</a>
       <a class="{{ ep('a_groups') }}" href="{{ url_for('a_groups') }}">{{ L('Группы','Guruhlar') }}</a>
       <a class="{{ ep('a_users') }}" href="{{ url_for('a_users') }}">{{ L('Пользователи','Foydalanuvchilar') }}</a>
+      <a class="{{ ep('a_videos') }}" href="{{ url_for('a_videos') }}">{{ L('Видео','Video') }}</a>
       <a class="{{ ep('a_branches') }}" href="{{ url_for('a_branches') }}">{{ L('Филиалы','Filiallar') }}</a>
       <a class="{{ ep('a_news') }}" href="{{ url_for('a_news') }}">{{ L('Объявления','E’lonlar') }}</a>
     {% elif me.role == 'teacher' %}

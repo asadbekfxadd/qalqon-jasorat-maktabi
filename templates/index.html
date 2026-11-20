@@ -11,11 +11,37 @@
 </div><div class="stripe"></div></div>
 
 <div class="ribbon"><div class="wrap">
-  <div class="k"><b>6+</b><span>{{ L('лет — принимаем с 6 лет','yosh — 6 yoshdan qabul qilamiz') }}</span></div>
+  <div class="k"><b>6+</b><span>{{ L('принимаем с 6 лет','6 yoshdan qabul qilamiz') }}</span></div>
   <div class="k"><b>3×</b><span>{{ L('занятия в неделю','haftada mashg‘ulot') }}</span></div>
   <div class="k"><b>≤ 20</b><span>{{ L('человек в группе','kishi guruhda') }}</span></div>
   <div class="k"><b>0</b><span>{{ L('сум — пробное занятие','so‘m — sinov mashg‘uloti') }}</span></div>
 </div></div>
+
+<section class="blk alt field" id="chronicle"><div class="wrap">
+  <div class="sec-head"><h2>{{ L('Хроника: как занимаются ребята','Xronika: bolalar qanday shug‘ullanadi') }}</h2><p>{{ L('Живые кадры с занятий: строевая, полоса препятствий, выезды. Выберите ролик в ленте.','Mashg‘ulotlardan jonli lavhalar: saf, to‘siqlar yo‘lagi, safarlar. Rolikni lentadan tanlang.') }}</p></div>
+  <div class="grid2">
+    <div class="monitor{{ ' v' if videos and videos[0].vertical }}" id="monitor" aria-label="{{ L('Видеомонитор','Video monitor') }}">
+      <div class="osd"><div class="rec"><i></i><span id="camlabel">{{ videos[0].title if videos and videos[0].title else L('Камера 01','Kamera 01') }}</span></div><time id="tc">00:00:00</time></div>
+      <div class="screen">
+        {% if videos %}
+        <button class="poster camo" type="button" id="poster" aria-label="{{ L('Смотреть видео','Videoni ko‘rish') }}"><img alt="" {% if videos[0].thumb %}src="{{ videos[0].thumb }}"{% else %}style="display:none"{% endif %} onerror="this.style.display='none'"><span class="playbtn"></span></button>
+        {% else %}
+        <div class="nosignal"><div><b>{{ L('НЕТ СИГНАЛА','SIGNAL YO‘Q') }}</b><span>{{ L('Видео с занятий скоро появятся здесь','Mashg‘ulot videolari tez orada shu yerda paydo bo‘ladi') }}</span></div></div>
+        {% endif %}
+        <div class="vf"></div>
+      </div>
+      <div class="osd bot"><span>Qalqon Jasorat · {{ L('полевая съёмка','dala suratga olish') }}</span><span class="sig" aria-hidden="true"><b></b><b></b><b></b><b></b></span></div>
+    </div>
+    <div class="clips" id="clips">
+      {% for v in videos %}<button type="button" class="clip camo-b{{ ' on' if loop.first }}" data-kind="{{ v.kind }}" data-src="{{ v.src }}" data-thumb="{{ v.thumb }}" data-v="{{ 1 if v.vertical else 0 }}" data-title="{{ v.title }}">
+        <span class="th camo">{% if v.thumb %}<img src="{{ v.thumb }}" alt="" loading="lazy" onerror="this.style.display='none'">{% endif %}</span>
+        <span><b>{{ v.title or L('Видео ' ~ loop.index, 'Video ' ~ loop.index) }}</b><small>{{ L('смотреть','ko‘rish') }}</small></span></button>
+      {% else %}
+      <div class="card"><h3>{{ L('Здесь будет лента клипов','Bu yerda klip lentasi bo‘ladi') }}</h3><p class="muted" style="margin:0">{{ L('Администратор добавляет ссылки на видео в разделе «Видео» — YouTube, Instagram, Telegram или файл .mp4.','Administrator «Video» bo‘limida havola qo‘shadi — YouTube, Instagram, Telegram yoki .mp4 fayl.') }}</p>{% if me and me.role=='admin' %}<p style="margin:14px 0 0"><a class="btn sm" href="{{ url_for('a_videos') }}">{{ L('Добавить видео','Video qo‘shish') }}</a></p>{% endif %}</div>
+      {% endfor %}
+    </div>
+  </div>
+</div></section>
 
 <section class="blk" id="about"><div class="wrap">
   <div class="sec-head"><h2>{{ L('Чему мы учим','Nimalarni o‘rgatamiz') }}</h2><p>{{ L('Четыре направления, которые вместе формируют дисциплину и характер.','Intizom va xarakter shakllantiradigan to‘rt yo‘nalish.') }}</p></div>
@@ -102,6 +128,32 @@
   </div>
 </div></section>
 </main>
+<script>
+(function(){
+  var mon=document.getElementById('monitor'); if(!mon) return;
+  var t0=Date.now(),tc=document.getElementById('tc');
+  setInterval(function(){var s=Math.floor((Date.now()-t0)/1000),p=function(n){return('0'+n).slice(-2)};tc.textContent=p(Math.floor(s/3600))+':'+p(Math.floor(s/60)%60)+':'+p(s%60)},1000);
+  var clips=[].slice.call(document.querySelectorAll('.clip')),screen=mon.querySelector('.screen'),poster=document.getElementById('poster'),label=document.getElementById('camlabel'),cur=clips[0];
+  if(!poster) return;
+  function clear(){[].forEach.call(screen.querySelectorAll('iframe,video'),function(n){n.remove()});screen.classList.remove('playing');poster.style.display=''}
+  function start(){
+    var c=cur,el;
+    if(c.dataset.kind==='file'){el=document.createElement('video');el.controls=true;el.autoplay=true;el.playsInline=true;el.src=c.dataset.src}
+    else{el=document.createElement('iframe');el.src=c.dataset.src;el.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';el.allowFullscreen=true;el.referrerPolicy='strict-origin-when-cross-origin';el.title=c.dataset.title||'video'}
+    screen.insertBefore(el,poster);poster.style.display='none';screen.classList.add('playing')
+  }
+  function pick(c){
+    cur=c;clips.forEach(function(x){x.classList.toggle('on',x===c)});clear();
+    mon.classList.toggle('v',c.dataset.v==='1');
+    label.textContent=c.dataset.title||label.textContent;
+    var img=poster.querySelector('img');
+    if(c.dataset.thumb){img.src=c.dataset.thumb;img.style.display=''}else{img.removeAttribute('src');img.style.display='none'}
+    start()
+  }
+  poster.addEventListener('click',start);
+  clips.forEach(function(c){c.addEventListener('click',function(){pick(c)})});
+})();
+</script>
 <footer class="foot"><div class="wrap">
   <div><h3>Qalqon Jasorat Maktabi</h3><p>{{ L('Военная школа для мальчиков и юношей.','O‘g‘il bolalar va o‘smirlar uchun harbiy maktab.') }}</p></div>
   <div><h3>{{ L('Связь','Aloqa') }}</h3><a href="tel:{{ SITE.phone|replace(' ','') }}">{{ SITE.phone }}</a><a href="mailto:{{ SITE.email }}">{{ SITE.email }}</a></div>
