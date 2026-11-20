@@ -4,14 +4,14 @@
 <div class="hero"><div class="wrap">
   <div>
     <h1>Qalqon Jasorat<small>Maktabi · {{ L('военная школа','harbiy maktab') }}</small></h1>
-    <p class="lead">{{ L('Дисциплина, знания и физическая подготовка для мальчиков и юношей 10–17 лет. Занятия по расписанию, оценки и посещаемость — в электронном дневнике для родителей.','10–17 yoshli o‘g‘il bolalar va o‘smirlar uchun intizom, bilim va jismoniy tayyorgarlik. Jadval bo‘yicha mashg‘ulotlar, baholar va davomat — ota-onalar uchun elektron kundalikda.') }}</p>
+    <p class="lead">{{ L('Дисциплина, знания и физическая подготовка для мальчиков и юношей с 6 лет. Занятия по расписанию, оценки и посещаемость — в электронном дневнике для родителей.','6 yoshdan o‘g‘il bolalar va o‘smirlar uchun intizom, bilim va jismoniy tayyorgarlik. Jadval bo‘yicha mashg‘ulotlar, baholar va davomat — ota-onalar uchun elektron kundalikda.') }}</p>
     <div class="cta"><a class="btn" href="#signup">{{ L('Записаться на пробное','Sinovga yozilish') }}</a><a class="btn ghost" href="#locations">{{ L('Адреса и расписание','Manzillar va jadval') }}</a></div>
   </div>
   <div class="plate"><img src="{{ url_for('static', filename='logo.jpg') }}" alt="Qalqon Jasorat Maktabi"></div>
 </div><div class="stripe"></div></div>
 
 <div class="ribbon"><div class="wrap">
-  <div class="k"><b>10–17</b><span>{{ L('лет — возраст учеников','yosh — o‘quvchilar yoshi') }}</span></div>
+  <div class="k"><b>6+</b><span>{{ L('лет — принимаем с 6 лет','yosh — 6 yoshdan qabul qilamiz') }}</span></div>
   <div class="k"><b>3×</b><span>{{ L('занятия в неделю','haftada mashg‘ulot') }}</span></div>
   <div class="k"><b>≤ 20</b><span>{{ L('человек в группе','kishi guruhda') }}</span></div>
   <div class="k"><b>0</b><span>{{ L('сум — пробное занятие','so‘m — sinov mashg‘uloti') }}</span></div>
@@ -92,7 +92,7 @@
     {% with m = get_flashed_messages(with_categories=true) %}{% for c, t in m %}<div class="flash {{ c }}" role="status">{{ t }}</div>{% endfor %}{% endwith %}
     <form method="post" action="{{ url_for('apply') }}" class="grid g2">{{ tok() }}
       <div><label for="child">{{ L('Имя ребёнка','Bolaning ismi') }}</label><input id="child" name="child" required maxlength="120"></div>
-      <div><label for="age">{{ L('Возраст','Yoshi') }}</label><input id="age" name="age" type="number" min="5" max="18" required></div>
+      <div><label for="age">{{ L('Возраст','Yoshi') }}</label><input id="age" name="age" type="number" min="6" max="17" required></div>
       <div><label for="parent">{{ L('Имя родителя','Ota-onaning ismi') }}</label><input id="parent" name="parent" required maxlength="120" autocomplete="name"></div>
       <div><label for="phone">{{ L('Телефон','Telefon') }}</label><input id="phone" name="phone" type="tel" placeholder="+998 90 123 45 67" required autocomplete="tel"></div>
       <div class="full"><label for="branch">{{ L('Филиал','Filial') }}</label><select id="branch" name="branch">{% for b in branches %}<option value="{{ b.id }}">{{ b.city }} — {{ b.address }}</option>{% endfor %}</select></div>

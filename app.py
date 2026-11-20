@@ -200,8 +200,8 @@ def apply():
     try: age = int(request.form.get("age", ""))
     except ValueError: age = 0
     digits = "".join(c for c in phone if c.isdigit())
-    if len(child) < 2 or len(parent) < 2 or len(digits) < 9 or not 5 <= age <= 18:
-        flash(LL("Проверьте поля формы: имена, возраст 5–18 и телефон.", "Forma maydonlarini tekshiring: ismlar, yosh 5–18 va telefon."), "err")
+    if len(child) < 2 or len(parent) < 2 or len(digits) < 9 or not 6 <= age <= 17:
+        flash(LL("Проверьте поля формы: имена, возраст 6–17 и телефон.", "Forma maydonlarini tekshiring: ismlar, yosh 6–17 va telefon."), "err")
         return redirect(url_for("index") + "#signup")
     b = db.session.get(Branch, request.form.get("branch", type=int) or 0)
     a = Application(child=child, age=age, parent=parent, phone=phone, branch=b, note=clean("note", 500))
@@ -485,13 +485,13 @@ def seed_demo():
     """Демо-данные для проверки (НЕ запускать на боевой базе)."""
     import random
     if Branch.query.count(): print("Уже есть данные"); return
-    bs = [Branch(city="Ташкент", area="Юнусабад", address="ул. Амира Темура, 15 (пример)", schedule="Пн, Ср, Пт 17:00–19:00", ages="10–17", phone="+998 90 111 22 33"),
-          Branch(city="Янгиюль", area="Центр", address="ул. Самарканд, 8 (пример)", schedule="Вт, Чт, Сб 16:00–18:00", ages="10–16", phone="+998 90 222 33 44")]
+    bs = [Branch(city="Ташкент", area="Юнусабад", address="ул. Амира Темура, 15 (пример)", schedule="Пн, Ср, Пт 17:00–19:00", ages="6–17", phone="+998 90 111 22 33"),
+          Branch(city="Янгиюль", area="Центр", address="ул. Самарканд, 8 (пример)", schedule="Вт, Чт, Сб 16:00–18:00", ages="6–16", phone="+998 90 222 33 44")]
     db.session.add_all(bs); db.session.flush()
     t = User(username="teacher", role="teacher", full_name="Рустам Каримов"); t.set_password("teacher123")
     p = User(username="parent", role="parent", full_name="Дилшод Алиев"); p.set_password("parent123")
     db.session.add_all([t, p]); db.session.flush()
-    gr = Group(name="Группа А (10–12 лет)", branch_id=bs[0].id, teacher_id=t.id, schedule="Пн, Ср, Пт 17:00"); db.session.add(gr); db.session.flush()
+    gr = Group(name="Группа А (6–9 лет)", branch_id=bs[0].id, teacher_id=t.id, schedule="Пн, Ср, Пт 17:00"); db.session.add(gr); db.session.flush()
     ss = [Student(full_name=n, birth_year=2014, group_id=gr.id, parent_id=p.id if i == 0 else None) for i, n in enumerate(["Азиз Алиев", "Бекзод Саидов", "Жасур Тошев", "Умар Рахимов"])]
     db.session.add_all(ss); db.session.flush()
     for s in ss:
