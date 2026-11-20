@@ -20,6 +20,9 @@ app.config.update(
 )
 if not app.config["SECRET_KEY"]:
     raise RuntimeError("Задайте SECRET_KEY в переменных окружения")
+if PROD:
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 db = SQLAlchemy(app)
 
 SITE = dict(
@@ -185,7 +188,10 @@ def guard():
     if g.me and not g.me.active: session.clear(); g.me = None
     if request.method == "POST":
         if not secrets.compare_digest(request.form.get("_csrf", ""), session.get("csrf", "-")):
-            abort(400)
+            flash(LL("Страница устарела. Попробуйте ещё раз.", "Sahifa eskirgan. Qayta urinib ko‘ring."), "err")
+            ref = request.referrer or ""
+            back = ref if ref.startswith(request.host_url) else url_for("login" if request.endpoint == "login" else "index")
+            return redirect(back)
     if g.me and g.me.must_change and request.endpoint not in ("account", "logout", "static", "set_lang"):
         return redirect(url_for("account"))
 
