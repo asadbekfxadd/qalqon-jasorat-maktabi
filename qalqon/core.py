@@ -121,15 +121,21 @@ def set_setting(k, v):
 
 
 # ───────── авторизация / права ─────────
+def pw_stamp(u):
+    """Отпечаток текущего пароля: лежит в сессии, и после смены/сброса пароля все старые входы перестают работать."""
+    return hashlib.sha256(("pv:" + u.password_hash).encode()).hexdigest()[:16]
+
+
 def load_user():
     g.user = None
     uid = session.get("uid")
     if uid:
         u = db.session.get(User, uid)
-        if u and u.active:
+        if u and u.active and secrets.compare_digest(str(session.get("pv", "")), pw_stamp(u)):
             g.user = u
         else:
             session.pop("uid", None)
+            session.pop("pv", None)
 
 
 def login_required(f):
@@ -185,7 +191,11 @@ def throttled(key, limit=8, window=600):
 
 
 def fail_attempt(key):
-    _attempts.setdefault(key, []).append(time.time())
+    now = time.time()
+    if len(_attempts) > 5000:  # не даём словарю расти бесконечно от подбора разных логинов
+        for k in [k for k, v in _attempts.items() if not v or now - v[-1] > 3600]:
+            _attempts.pop(k, None)
+    _attempts.setdefault(key, []).append(now)
 
 
 def clear_attempts(key):
