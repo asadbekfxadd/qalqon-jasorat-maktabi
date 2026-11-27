@@ -1,5 +1,5 @@
 """Вход, выход, профиль, восстановление пароля, уведомления, сообщения, файлы."""
-import hashlib, secrets
+import hashlib, os, secrets
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, g, abort, Response
 from .models import *
@@ -36,6 +36,7 @@ def login():
             lg = session.get("lang")
             session.clear()
             session["uid"] = u.id
+            session["pv"] = pw_stamp(u)
             if lg:
                 session["lang"] = lg
             session.permanent = True
@@ -89,6 +90,7 @@ def account():
                 u.set_password(new)
                 u.must_change = False
                 db.session.commit()
+                session["pv"] = pw_stamp(u)  # текущий вход остаётся, остальные завершаются
                 audit("password_change")
                 flash(L("Parol almashtirildi.", "Пароль изменён."), "ok")
                 return redirect(home_for(u))
@@ -110,7 +112,9 @@ def forgot():
                 db.session.add(PasswordReset(user_id=u.id, token_hash=hashlib.sha256(tok.encode()).hexdigest(),
                                              expires=datetime.utcnow() + timedelta(hours=1)))
                 db.session.commit()
-                link = request.host_url.rstrip("/") + url_for("auth.reset", token=tok)
+                # адрес берём из настройки, а не из заголовка Host: иначе ссылку в письме можно подменить
+                base = (os.environ.get("PUBLIC_URL") or request.host_url).rstrip("/")
+                link = base + url_for("auth.reset", token=tok)
                 if u.email:
                     from .core import _send_email
                     import threading

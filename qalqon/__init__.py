@@ -55,6 +55,8 @@ def create_app():
         r.headers["X-Frame-Options"] = "SAMEORIGIN"
         r.headers["Referrer-Policy"] = "same-origin"
         r.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        if app.config["PROD"]:
+            r.headers["Strict-Transport-Security"] = "max-age=31536000"
         if request.path.startswith(("/admin", "/teacher", "/cabinet", "/login", "/account", "/messages", "/file")):
             r.headers["Cache-Control"] = "no-store"
         return r
